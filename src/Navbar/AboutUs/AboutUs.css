@@ -1,0 +1,23 @@
+/* AboutUs.css */
+
+.about-us-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .left-half {
+    flex: 1;
+    margin-right: 20px;
+  }
+  
+  .right-half {
+    flex: 1;
+  }
+  
+  .about-us-image {
+    max-width: 100%;
+    height: auto;
+  }
+  
