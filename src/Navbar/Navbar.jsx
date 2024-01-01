@@ -1,11 +1,23 @@
-import React from 'react';
-import logo from '../images/logo.png';
-import SignIn from './RegisterUser';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import logo from "../images/logo.png";
+import SignIn from "./RegisterUser";
+import { Link } from "react-router-dom";
+import { TERipple } from "tw-elements-react";
 
 function NavBar() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleInputChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSearch = () => {
+    // Implement your search logic using the searchTerm state
+    console.log("Performing search for:", searchTerm);
+    // You can perform actions such as fetching data or filtering based on searchTerm
+  };
+
   return (
-    <div className="bg-gray-800 py-3 flex items-center justify-between px-6">
+    <div className="bg-gray-800 py-3 flex items-center justify-between px-8">
       {/* Logo on the left */}
       <div className="flex items-center">
         <img src={logo} alt="Logo" className="h-12 w-50" />
@@ -25,7 +37,10 @@ function NavBar() {
         <Link to="/faq" className="nav-link text-white hover:text-red-500">
           FAQ
         </Link>
-        <Link to="/contact-us" className="nav-link text-white hover:text-red-500">
+        <Link
+          to="/contact-us"
+          className="nav-link text-white hover:text-red-500"
+        >
           CONTACT-US
         </Link>
         <Link to="/about-us" className="nav-link text-white hover:text-red-500">
@@ -35,26 +50,41 @@ function NavBar() {
 
       {/* Search bar, Sign In, Register, and Shopping Cart */}
       <div className="flex items-center space-x-4">
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg
-              className="h-5 w-5 text-gray-700"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                // d="M12.356 13.78a6.5 6.5 0 111.414-1.414l3.962 3.962a1 1 0 11-1.415 1.415l-3.961-3.963zm-4.855-.643a5 5 0 116.303.748l3.971 3.97a1 1 0 01-1.415 1.414l-3.971-3.97a5 5 0 11-5.888-5.887l3.97 3.972a1 1 0 11-1.415 1.414l-3.97-3.971a5 5 0 01.748 6.303z"
-                clipRule="evenodd"
-              />
-            </svg>
+        <div className="md:w-72 mr-2">
+          <div className="relative flex w-full flex-wrap items-stretch">
+            <input
+              type="search"
+              value={searchTerm}
+              onChange={handleInputChange}
+              className="relative m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] bg-white text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
+              placeholder="Search"
+              aria-label="Search"
+              aria-describedby="button-addon1"
+            />
+
+            {/* <!--Search button--> */}
+            <TERipple color="light">
+              <button
+                className="relative z-[2] flex items-center rounded-r bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out bg-gray-500 hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg"
+                type="button"
+                id="button-addon1"
+                onClick={handleSearch}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="h-5 w-5"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+            </TERipple>
           </div>
-          <input
-            type="text"
-            placeholder="Search..."
-            className="pl-10 pr-4 py-2 border-4 border-gray-400 rounded-md text-gray-700 focus:outline-none"
-          />
         </div>
         <a href={SignIn} className="nav-link text-white hover:text-red-500">
           SIGN IN
