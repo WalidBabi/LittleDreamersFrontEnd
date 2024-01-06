@@ -1,15 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 
 function RegisterUser() {
+  const navigate = useNavigate(); // Use useNavigate hook instead of useHistory
   const [formData, setFormData] = useState(() => {
-    const storedData = localStorage.getItem('formData');
-    return storedData ? JSON.parse(storedData) : {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-    };
+    const storedData = localStorage.getItem("formData");
+    return storedData
+      ? JSON.parse(storedData)
+      : {
+          firstName: "",
+          lastName: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        };
   });
 
   const [errors, setErrors] = useState({
@@ -21,7 +26,7 @@ function RegisterUser() {
   });
 
   useEffect(() => {
-    localStorage.setItem('formData', JSON.stringify(formData));
+    localStorage.setItem("formData", JSON.stringify(formData));
   }, [formData]);
 
   const handleInputChange = (e) => {
@@ -30,12 +35,11 @@ function RegisterUser() {
     setErrors({ ...errors, [name]: false });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let hasErrors = false;
     const newErrors = { ...errors };
 
-    // Check for empty fields
     for (const key in formData) {
       if (!formData[key]) {
         newErrors[key] = true;
@@ -43,7 +47,6 @@ function RegisterUser() {
       }
     }
 
-    // Check if passwords match
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = true;
       hasErrors = true;
@@ -52,9 +55,26 @@ function RegisterUser() {
     if (hasErrors) {
       setErrors(newErrors);
     } else {
-      // Perform registration logic here using formData state
-      console.log('Form Submitted:', formData);
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/register",
+          {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            email: formData.email,
+            password: formData.password,
+            // Add other necessary fields here
+          }
+        );
+
+        console.log("Registration successful:", response.data);
+        // Handle success, redirect user, etc.
+      } catch (error) {
+        console.error("Registration failed:", error);
+        // Handle error, show error message, etc.
+      }
     }
+    navigate('/');
   };
 
   return (
@@ -63,7 +83,10 @@ function RegisterUser() {
         <h1 className="text-2xl font-semibold text-center mb-4">Sign Up</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="firstName"
+              className="block text-sm font-medium text-gray-700"
+            >
               First Name
             </label>
             <input
@@ -73,16 +96,21 @@ function RegisterUser() {
               value={formData.firstName}
               onChange={handleInputChange}
               className={`w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300 ${
-                errors.firstName ? 'border-red-500' : ''
+                errors.firstName ? "border-red-500" : ""
               }`}
               required
             />
             {errors.firstName && (
-              <p className="text-red-500 text-xs mt-1">First Name cannot be empty.</p>
+              <p className="text-red-500 text-xs mt-1">
+                First Name cannot be empty.
+              </p>
             )}
           </div>
           <div className="mb-4">
-            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="lastName"
+              className="block text-sm font-medium text-gray-700"
+            >
               Last Name
             </label>
             <input
@@ -92,16 +120,21 @@ function RegisterUser() {
               value={formData.lastName}
               onChange={handleInputChange}
               className={`w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300 ${
-                errors.lastName ? 'border-red-500' : ''
+                errors.lastName ? "border-red-500" : ""
               }`}
               required
             />
             {errors.lastName && (
-              <p className="text-red-500 text-xs mt-1">Last Name cannot be empty.</p>
+              <p className="text-red-500 text-xs mt-1">
+                Last Name cannot be empty.
+              </p>
             )}
           </div>
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               Email
             </label>
             <input
@@ -111,16 +144,21 @@ function RegisterUser() {
               value={formData.email}
               onChange={handleInputChange}
               className={`w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300 ${
-                errors.email ? 'border-red-500' : ''
+                errors.email ? "border-red-500" : ""
               }`}
               required
             />
             {errors.email && (
-              <p className="text-red-500 text-xs mt-1">Email cannot be empty.</p>
+              <p className="text-red-500 text-xs mt-1">
+                Email cannot be empty.
+              </p>
             )}
           </div>
           <div className="mb-4">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Password
             </label>
             <input
@@ -130,16 +168,21 @@ function RegisterUser() {
               value={formData.password}
               onChange={handleInputChange}
               className={`w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300 ${
-                errors.password ? 'border-red-500' : ''
+                errors.password ? "border-red-500" : ""
               }`}
               required
             />
             {errors.password && (
-              <p className="text-red-500 text-xs mt-1">Password cannot be empty.</p>
+              <p className="text-red-500 text-xs mt-1">
+                Password cannot be empty.
+              </p>
             )}
           </div>
           <div className="mb-4">
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700"
+            >
               Confirm Password
             </label>
             <input
@@ -149,7 +192,7 @@ function RegisterUser() {
               value={formData.confirmPassword}
               onChange={handleInputChange}
               className={`w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300 ${
-                errors.confirmPassword ? 'border-red-500' : ''
+                errors.confirmPassword ? "border-red-500" : ""
               }`}
               required
             />
@@ -160,7 +203,7 @@ function RegisterUser() {
             )}
           </div>
           <button
-            type="submit"
+            onClick={handleSubmit}
             className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300"
           >
             Register
