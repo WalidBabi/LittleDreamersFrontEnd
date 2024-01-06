@@ -17,7 +17,7 @@ function NavBar() {
   };
 
   return (
-    <div className="bg-gray-800 py-3 flex items-center justify-between px-8">
+    <div className="bg-gray-800 py-3 px-8 flex items-center justify-between">
       {/* Logo on the left */}
       <div className="flex items-center">
         <img src={logo} alt="Logo" className="h-12 w-50" />
@@ -28,15 +28,6 @@ function NavBar() {
         <Link to="/" className="nav-link text-white hover:text-red-500">
           HOME
         </Link>
-        <Link to="/" className="nav-link text-white hover:text-red-500">
-          BOYS
-        </Link>
-        <Link to="/" className="nav-link text-white hover:text-red-500">
-          GIRLS
-        </Link>
-        <Link to="/faq" className="nav-link text-white hover:text-red-500">
-          FAQ
-        </Link>
         <Link
           to="/contact-us"
           className="nav-link text-white hover:text-red-500"
@@ -45,6 +36,9 @@ function NavBar() {
         </Link>
         <Link to="/about-us" className="nav-link text-white hover:text-red-500">
           ABOUT-US
+        </Link>
+        <Link to="/faq" className="nav-link text-white hover:text-red-500">
+          FAQ
         </Link>
       </div>
 
@@ -86,9 +80,9 @@ function NavBar() {
             </TERipple>
           </div>
         </div>
-        <a href={SignIn} className="nav-link text-white hover:text-red-500">
+        <Link to={SignIn} className="nav-link text-white hover:text-red-500">
           SIGN IN
-        </a>
+        </Link>
         <Link to="/register" className="nav-link text-white hover:text-red-500">
           REGISTER
         </Link>
