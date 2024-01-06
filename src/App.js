@@ -17,11 +17,9 @@ function App() {
           <NavBar />
           <Routes>
             <Route exact path="/" element={<HomePage />} />
-            {/* <Route path="/boys" element={<Boys/>} />
-        <Route path="/girls" element={<Girls/>} /> */}
-            <Route path="/faq" element={<FAQ />} />
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route path="/register" element={<RegisterUser />} />
             {/* <Route path="/sign-in" element={<SignIn/>} /> */}
           </Routes>
