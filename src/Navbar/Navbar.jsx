@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import logo from "../images/logo.png";
 import SignIn from "./RegisterUser";
 import { Link } from "react-router-dom";
-import { TERipple } from "tw-elements-react";
 
 function NavBar() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -57,7 +56,6 @@ function NavBar() {
             />
 
             {/* <!--Search button--> */}
-            <TERipple color="light">
               <button
                 className="relative z-[2] flex items-center rounded-r bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out bg-gray-500 hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg"
                 type="button"
@@ -77,7 +75,6 @@ function NavBar() {
                   />
                 </svg>
               </button>
-            </TERipple>
           </div>
         </div>
         <Link to={SignIn} className="nav-link text-white hover:text-red-500">
