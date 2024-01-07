@@ -1,19 +1,36 @@
 import React, { useState } from "react";
 import logo from "../images/logo.png";
-import SignIn from "./RegisterUser";
 import { Link } from "react-router-dom";
 
 function NavBar() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showCart, setShowCart] = useState(false); // State to manage the display of the cart popup
+
   const handleInputChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
   const handleSearch = () => {
-    // Implement your search logic using the searchTerm state
     console.log("Performing search for:", searchTerm);
-    // You can perform actions such as fetching data or filtering based on searchTerm
+    // Implement your search logic using the searchTerm state
   };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    // Implement logout logic here
+  };
+
+  const handleCartClick = () => {
+    setShowCart(!showCart); // Toggle the display of the cart popup
+  };
+
+  // Sample cart content - replace this with your actual cart data
+  const cartItems = [
+    { id: 1, name: "Product 1", price: 10 },
+    { id: 2, name: "Product 2", price: 15 },
+    // Add more items as needed
+  ];
 
   return (
     <div className="bg-gray-800 py-3 px-8 flex items-center justify-between">
@@ -41,9 +58,10 @@ function NavBar() {
         </Link>
       </div>
 
-      {/* Search bar, Sign In, Register, and Shopping Cart */}
+      {/* Search bar, Sign In/Register or Logout, and Shopping Cart */}
       <div className="flex items-center space-x-4">
         <div className="md:w-72 mr-2">
+          {/* Search Input */}
           <div className="relative flex w-full flex-wrap items-stretch">
             <input
               type="search"
@@ -55,43 +73,88 @@ function NavBar() {
               aria-describedby="button-addon1"
             />
 
-            {/* <!--Search button--> */}
-              <button
-                className="relative z-[2] flex items-center rounded-r bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out bg-gray-500 hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg"
-                type="button"
-                id="button-addon1"
-                onClick={handleSearch}
+            <button
+              className="relative z-[2] flex items-center rounded-r bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out bg-gray-500 hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg"
+              type="button"
+              id="button-addon1"
+              onClick={handleSearch}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="h-5 w-5"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="h-5 w-5"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
+                <path
+                  fillRule="evenodd"
+                  d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
           </div>
         </div>
-        <Link to={SignIn} className="nav-link text-white hover:text-red-500">
-          SIGN IN
-        </Link>
-        <Link to="/register" className="nav-link text-white hover:text-red-500">
-          REGISTER
-        </Link>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 text-white hover:text-red-500 cursor-pointer"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          {/* SVG path for shopping cart icon */}
-        </svg>
+
+        {isLoggedIn ? (
+          <>
+            <button
+              onClick={handleLogout}
+              className="nav-link text-white hover:text-red-500"
+            >
+              LOG OUT
+            </button>
+            {/* Render other authenticated user links here */}
+          </>
+        ) : (
+          <>
+            <Link
+              to="/signin"
+              className="nav-link text-white hover:text-red-500"
+            >
+              SIGN IN
+            </Link>
+            <Link
+              to="/register"
+              className="nav-link text-white hover:text-red-500"
+            >
+              REGISTER
+            </Link>
+          </>
+        )}
+
+        {/* Shopping Cart Icon */}
+        <div className="relative">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 text-white hover:text-red-500 cursor-pointer"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.5"
+            onClick={handleCartClick} // Handle click on the cart icon
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+            />
+          </svg>
+
+          {/* Cart Popup */}
+          {showCart && (
+            <div className="absolute top-10 right-0 bg-white p-4 shadow-md">
+              <h2 className="text-lg font-bold mb-2">Shopping Cart</h2>
+              <ul>
+                {cartItems.map((item) => (
+                  <li key={item.id}>
+                    {item.name} - ${item.price}
+                  </li>
+                ))}
+              </ul>
+              {/* Add checkout or more cart functionality here */}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
