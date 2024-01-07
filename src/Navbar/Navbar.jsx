@@ -104,6 +104,41 @@ function NavBar() {
               LOG OUT
             </button>
             {/* Render other authenticated user links here */}
+            {/* Shopping Cart Icon */}
+            <div className="relative">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-white hover:text-red-500 cursor-pointer"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                onClick={handleCartClick} // Handle click on the cart icon
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+                />
+              </svg>
+
+              {/* Cart Popup */}
+              {showCart && (
+                <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+                  <div className="bg-white p-8 rounded shadow-md">
+                    <h2 className="text-lg font-bold mb-4">Shopping Cart</h2>
+                    <ul>
+                      {cartItems.map((item) => (
+                        <li key={item.id}>
+                          {item.name} - ${item.price}
+                        </li>
+                      ))}
+                    </ul>
+                    {/* Add checkout or more cart functionality here */}
+                  </div>
+                </div>
+              )}
+            </div>
           </>
         ) : (
           <>
@@ -121,40 +156,6 @@ function NavBar() {
             </Link>
           </>
         )}
-
-        {/* Shopping Cart Icon */}
-        <div className="relative">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 text-white hover:text-red-500 cursor-pointer"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="1.5"
-            onClick={handleCartClick} // Handle click on the cart icon
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-            />
-          </svg>
-
-          {/* Cart Popup */}
-          {showCart && (
-            <div className="absolute top-10 right-0 bg-white p-4 shadow-md">
-              <h2 className="text-lg font-bold mb-2">Shopping Cart</h2>
-              <ul>
-                {cartItems.map((item) => (
-                  <li key={item.id}>
-                    {item.name} - ${item.price}
-                  </li>
-                ))}
-              </ul>
-              {/* Add checkout or more cart functionality here */}
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );
