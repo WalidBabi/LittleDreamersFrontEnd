@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-function LogIn() {
-  const navigate = useNavigate(); 
+function LogIn({ setIsLoggedIn }) {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState(() => {
     const storedData = localStorage.getItem("formData");
     return storedData
@@ -45,20 +45,29 @@ function LogIn() {
       setErrors(newErrors);
     } else {
       try {
-        const response = await axios.post(
-          "http://localhost:8000/api/login",
-          {
-            email: formData.email,
-            password: formData.password,
-          }
-        );
+        const response = await axios.post("http://localhost:8000/api/login", {
+          email: formData.email,
+          password: formData.password,
+        });
 
-        console.log("Login successful:", response.data);
+        console.log("login successful:", response.data);
+        setIsLoggedIn(true);
+        navigate("/");
       } catch (error) {
-        console.error("Login failed:", error);
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          console.error("Server responded with a status code:", error.response.status);
+          console.error("Server response data:", error.response.data);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error("No response received:", error.request);
+        } else {
+          // Something happened in setting up the request that triggered an error
+          console.error("Error:", error.message);
+        }
+        // Handle the error state accordingly
       }
     }
-    navigate('/');
   };
 
   return (

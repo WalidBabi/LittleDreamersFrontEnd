@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import logo from "../images/logo.png";
 import { Link } from "react-router-dom";
 
-function NavBar() {
+function NavBar({ isLoggedIn, setIsLoggedIn }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showCart, setShowCart] = useState(false); // State to manage the display of the cart popup
 
   const handleInputChange = (event) => {
@@ -35,9 +34,11 @@ function NavBar() {
   return (
     <div className="bg-gray-800 py-3 px-8 flex items-center justify-between">
       {/* Logo on the left */}
-      <div className="flex items-center">
-        <img src={logo} alt="Logo" className="h-12 w-50" />
-      </div>
+      <Link to="/">
+        <div className="flex items-center">
+          <img src={logo} alt="Logo" className="h-12 w-50" />
+        </div>
+      </Link>
 
       {/* Navigation Links in the center */}
       <div className="flex justify-center space-x-6">
@@ -143,7 +144,7 @@ function NavBar() {
         ) : (
           <>
             <Link
-              to="/signin"
+              to="/login"
               className="nav-link text-white hover:text-red-500"
             >
               SIGN IN

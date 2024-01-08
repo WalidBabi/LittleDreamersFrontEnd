@@ -74,7 +74,7 @@ function RegisterUser() {
         // Handle error, show error message, etc.
       }
     }
-    navigate('/');
+    navigate('/login');
   };
 
   return (
