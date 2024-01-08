@@ -6,6 +6,7 @@ import FAQ from "./Navbar/Faq";
 import ContactUs from "./Navbar/ContactUs";
 import AboutUs from "./Navbar/AboutUs/AboutUs";
 import RegisterUser from "./Navbar/RegisterUser";
+import LoginUser from "./Navbar/LogIn";
 import NavBar from "./Navbar/Navbar";
 import HomePage from "./Home/HomePage";
 
@@ -21,7 +22,7 @@ function App() {
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/register" element={<RegisterUser />} />
-            {/* <Route path="/sign-in" element={<SignIn/>} /> */}
+            <Route path="/signin" element={<LoginUser/>} />
           </Routes>
         </MyContextProvider>
       </Router>
