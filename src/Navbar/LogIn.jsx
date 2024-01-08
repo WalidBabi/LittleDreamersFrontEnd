@@ -71,7 +71,7 @@ function LogIn() {
               htmlFor="email"
               className="block text-sm font-medium text-gray-700"
             >
-              Email
+              Email<span className="text-red-500">*</span>
             </label>
             <input
               type="email"
@@ -95,7 +95,7 @@ function LogIn() {
               htmlFor="password"
               className="block text-sm font-medium text-gray-700"
             >
-              Password
+              Password<span className="text-red-500">*</span>
             </label>
             <input
               type="password"
