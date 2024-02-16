@@ -50,6 +50,11 @@ function LogIn({ setIsLoggedIn }) {
           password: formData.password,
         });
 
+        // Store token in localStorage
+        localStorage.setItem("token", response.data.token);
+
+        // Set token in Axios headers for subsequent requests
+        axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
         console.log("login successful:", response.data);
         setIsLoggedIn(true);
         navigate("/");
