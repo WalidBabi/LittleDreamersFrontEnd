@@ -1,10 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import logo from "../images/logo.png";
 import { Link } from "react-router-dom";
+import { sendLogoutRequest } from "../API/LogoutApi";
+import ShoppingCart from "./ShoppingCart";
 
 function NavBar({ isLoggedIn, setIsLoggedIn }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [showCart, setShowCart] = useState(false); // State to manage the display of the cart popup
+  const [showCart, setShowCart] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
+  // Load cart items from local storage on component mount
+  useEffect(() => {
+    const storedCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    setCartItems(storedCartItems);
+  }, []);
 
   const handleInputChange = (event) => {
     setSearchTerm(event.target.value);
@@ -16,20 +27,121 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
-    // Implement logout logic here
+    // Show confirmation modal
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmLogout = async () => {
+    const logoutEndpoint = "your-logout-api-endpoint";
+
+    const logoutResult = await sendLogoutRequest(logoutEndpoint);
+
+    if (logoutResult.success) {
+      // Clear user authentication state
+      setIsLoggedIn(false);
+
+      // Clear tokens or session data on the client side (if applicable)
+      // ...
+
+      // Close the confirmation modal
+      setShowConfirmation(false);
+
+      // Redirect to the login page or another appropriate page (if needed)
+      // history.push("/login");
+    } else {
+      // Handle logout failure
+      console.error("Logout failed:", logoutResult.message);
+      // Display an error message to the user (if needed)
+      // ...
+    }
+  };
+
+  const handleCancelLogout = () => {
+    // Close the confirmation modal
+    setShowConfirmation(false);
   };
 
   const handleCartClick = () => {
     setShowCart(!showCart); // Toggle the display of the cart popup
   };
 
-  // Sample cart content - replace this with your actual cart data
-  const cartItems = [
-    { id: 1, name: "Product 1", price: 10 },
-    { id: 2, name: "Product 2", price: 15 },
-    // Add more items as needed
-  ];
+  const handleBuyClick = () => {
+    // Prepare data to send to the backend
+    const purchaseData = {
+      products: cartItems.map((item) => ({
+        productId: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        rating: item.rating,
+        fullPrice: item.price * item.quantity,
+      })),
+    };
+
+    // Send the data to the backend using Axios
+    axios
+      .post(`your-purchase-api-endpoint`, purchaseData)
+      .then((response) => {
+        console.log("Purchase data sent to backend successfully");
+
+        // Clear the cart items in state
+        setCartItems([]);
+        // Clear the cart items in local storage
+        localStorage.removeItem("cartItems");
+        // Close the cart popup
+        setShowCart(false);
+
+        // Display success message
+        const successMessage = document.createElement("div");
+        successMessage.innerHTML =
+          "Purchase successful! Thank you for shopping!";
+        successMessage.className =
+          "fixed top-0 left-0 right-0 bg-green-500 text-white p-6 text-center";
+        document.body.appendChild(successMessage);
+
+        // Remove the success message after 3 seconds (adjust as needed)
+        setTimeout(() => {
+          document.body.removeChild(successMessage);
+        }, 3000);
+      })
+      .catch((error) => {
+        console.error("Error sending purchase data to backend:", error);
+      });
+  };
+
+  const handleAddItem = (itemId) => {
+    // Update the quantity of the selected item in the cart
+    setCartItems((prevCartItems) =>
+      prevCartItems.map((item) =>
+        item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
+  };
+
+  const handleRemoveItem = (itemId) => {
+    // Update the quantity of the selected item in the cart
+    setCartItems((prevCartItems) =>
+      prevCartItems.map((item) =>
+        item.id === itemId
+          ? { ...item, quantity: Math.max(1, item.quantity - 1) }
+          : item
+      )
+    );
+  };
+
+  const calculateTotalPrice = () => {
+    return cartItems.reduce((total, item) => {
+      return total + item.price * item.quantity;
+    }, 0);
+  };
+
+  const handleDeleteAllItems = () => {
+    // Clear the cart items in state
+    setCartItems([]);
+    // Clear the cart items in local storage
+    localStorage.removeItem("cartItems");
+    // Close the cart popup
+    setShowCart(false);
+  };
 
   return (
     <div className="bg-gray-800 py-3 px-8 flex items-center justify-between">
@@ -73,9 +185,8 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
               aria-label="Search"
               aria-describedby="button-addon1"
             />
-
             <button
-              className="relative z-[2] flex items-center rounded-r bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out bg-gray-500 hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg"
+              className="relative flex items-center rounded-r bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out bg-gray-500 hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg"
               type="button"
               id="button-addon1"
               onClick={handleSearch}
@@ -125,19 +236,16 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
 
               {/* Cart Popup */}
               {showCart && (
-                <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-                  <div className="bg-white p-8 rounded shadow-md">
-                    <h2 className="text-lg font-bold mb-4">Shopping Cart</h2>
-                    <ul>
-                      {cartItems.map((item) => (
-                        <li key={item.id}>
-                          {item.name} - ${item.price}
-                        </li>
-                      ))}
-                    </ul>
-                    {/* Add checkout or more cart functionality here */}
-                  </div>
-                </div>
+                <ShoppingCart
+                  cartItems={cartItems}
+                  showCart={showCart}
+                  setShowCart={setShowCart}
+                  handleRemoveItem={handleRemoveItem}
+                  handleAddItem={handleAddItem}
+                  handleDeleteAllItems={handleDeleteAllItems}
+                  handleBuyClick={handleBuyClick}
+                  calculateTotalPrice={calculateTotalPrice}
+                />
               )}
             </div>
           </>
@@ -158,6 +266,31 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
           </>
         )}
       </div>
+
+      {/* Confirmation Modal */}
+      {showConfirmation && (
+        <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
+          <div className="bg-white p-8 rounded shadow-md text-center">
+            <p className="text-lg font-semibold mb-4">
+              Are you sure you want to log out?
+            </p>
+            <div className="flex justify-center">
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded mr-4"
+                onClick={handleConfirmLogout}
+              >
+                Yes
+              </button>
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded"
+                onClick={handleCancelLogout}
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
