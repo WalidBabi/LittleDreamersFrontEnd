@@ -17,15 +17,18 @@ const ProductPage = ({ productId }) => {
   const [rating, setRating] = useState(null);
 
   useEffect(() => {
-    // Fetch product details from the backend
-    axios
-      .get(`your-product-api-endpoint/${productId}`)
-      .then((response) => {
-        setProduct(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching product details:", error);
-      });
+    // Check if productId is truthy before making the API request
+    if (productId) {
+      // Fetch product details from the backend
+      axios
+        .get(`http://localhost:8000/api/product/${productId}`)
+        .then((response) => {
+          setProduct(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching product details:", error);
+        });
+    }
 
     // Fetch user's rating from local storage
     const storedRating = localStorage.getItem(`${productId}-rating`);
