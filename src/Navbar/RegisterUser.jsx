@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate hook
 import register_foto from "../images/register_foto.png";
-
+import { useAuth } from "./AuthContext";
 
 function RegisterUser() {
-  const navigate = useNavigate(); // Use useNavigate hook instead of useHistory
+  const navigate = useNavigate();
+  const { setIsLoggedIn } = useAuth();
   const [formData, setFormData] = useState(() => {
     const storedData = localStorage.getItem("formData");
     return storedData
@@ -65,26 +66,44 @@ function RegisterUser() {
             last_name: formData.lastName,
             email: formData.email,
             password: formData.password,
-            // Add other necessary fields here
           }
         );
 
+        // Create userName by concatenating firstName and lastName
+        const userName = `${formData.firstName} ${formData.lastName}`;
+
         console.log("Registration successful:", response.data);
-        // Handle success, redirect user, etc.
+
+        // Log in the user after successful registration
+        const loginResponse = await axios.post(
+          "http://localhost:8000/api/login",
+          {
+            email: formData.email,
+            password: formData.password,
+          }
+        );
+
+        // Store token in localStorage
+        localStorage.setItem("token", loginResponse.data.token);
+
+        // Set user information in localStorage
+        localStorage.setItem("userName", userName);
+        localStorage.setItem("isParentUser", response.data.isParentUser);
+
+        setIsLoggedIn(true);
+        navigate("/login");
       } catch (error) {
         console.error("Registration failed:", error);
-        // Handle error, show error message, etc.
       }
     }
-    navigate('/login');
   };
 
   return (
-    <div className="items-center justify-between bg-gray-100">
+    <div className="items-center justify-between bg-gray-100 max-h-0">
       <div className="flex justify-between p-20 gap-20 items-center ml-10">
-        <div className="pl-50 ml-50">
-            <img src={register_foto} alt="register_foto" width={500} />
-          </div>
+        <div className="pl-40 ml-50">
+          <img src={register_foto} alt="register_foto" width={500} />
+        </div>
         <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg mr-10">
           <h1 className="text-2xl font-semibold text-center mb-4">Sign Up</h1>
           <form onSubmit={handleSubmit}>
@@ -215,6 +234,13 @@ function RegisterUser() {
               Register
             </button>
           </form>
+          <p className="mt-4 text-center">
+            Already have an account?{" "}
+            <Link to="/login" className="text-blue-500">
+              Login here
+            </Link>
+            .
+          </p>
         </div>
       </div>
     </div>
