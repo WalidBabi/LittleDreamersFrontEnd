@@ -1,0 +1,183 @@
+/* Add this to your styles or create a new CSS file */
+body,
+html,
+#root {
+  height: 100%;
+}
+
+.min-h-screen {
+  min-height: 100%;
+}
+
+.product-container {
+  height: 300px; /* Set the desired height for the product container */
+  border: 1px solid #ddd; /* Optional: Add a border for better visibility */
+  padding: 10px; /* Optional: Add padding for better spacing */
+  border-radius: 8px; /* Optional: Add border-radius for rounded corners */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Sidebar styling */
+.sidebar {
+  background-color: #2c3e50;
+  color: #ecf0f1;
+}
+
+.sidebar-header {
+  padding: 1rem;
+  border-bottom: 1px solid #34495e;
+}
+
+.sidebar-account {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.sidebar-account:hover {
+  background-color: #34495e;
+}
+
+.account-selected {
+  background-color: #34495e;
+}
+
+.account-selected:hover {
+  background-color: #2c3e50;
+}
+
+/* Category Filters styling */
+.filters-container {
+  padding: 1rem;
+}
+
+.filter-group {
+  margin-bottom: 1rem;
+}
+
+.filter-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-options {
+  margin-top: 0.5rem;
+}
+
+/* Divider between sidebar and product display */
+.divider {
+  width: 1px;
+  background-color: #34495e;
+}
+
+/* Product Display styling */
+.product-container {
+  /* Your existing product container styles */
+}
+
+/* Pagination styling */
+.pagination {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Pagination button styling */
+.pagination-btn {
+  padding: 0.5rem 1rem;
+  margin: 0 0.25rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.pagination-btn:hover {
+  background-color: #3498db;
+  color: #ecf0f1;
+}
+
+/* Category Filters section */
+.mb-4 h2 {
+  color: #333;
+}
+
+/* Style for the filter options */
+.space-y-2 label {
+  display: block;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.space-y-2 label:hover {
+  background-color: #f0f0f0;
+}
+
+/* Style for the active filter options */
+.space-y-2 label input:checked + span {
+  background-color: #3490dc;
+  color: #fff;
+}
+
+/* Style for the checkbox */
+.space-y-2 label input {
+  margin-right: 0.5rem;
+}
+
+/* Style for the arrow icon */
+.space-y-2 .flex svg {
+  transition: transform 0.3s ease;
+}
+
+.space-y-2 .flex.active svg {
+  transform: rotate(90deg);
+}
+
+.mb-4 h2 {
+  color: #333;
+}
+
+.space-y-2 label {
+  display: block;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.space-y-2 label:hover {
+  background-color: #f0f0f0;
+}
+
+/* Style for the active filter options */
+.space-y-2 label input:checked + span {
+  background-color: #3490dc;
+  color: #fff;
+}
+
+/* Style for the checkbox */
+.space-y-2 label input {
+  margin-right: 0.5rem;
+}
+
+/* Style for the arrow icon */
+.space-y-2 .flex svg {
+  transition: transform 0.3s ease;
+}
+
+/* Style for the arrow icon when closed */
+.space-y-2.collapsed .flex svg {
+  transform: rotate(0deg);
+}
