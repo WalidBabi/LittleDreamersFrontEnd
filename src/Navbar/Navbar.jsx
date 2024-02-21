@@ -32,15 +32,42 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
   };
 
   const handleConfirmLogout = async () => {
-    const logoutEndpoint = "your-logout-api-endpoint";
+    const logoutEndpoint = "http://localhost:8000/api/logout";
 
-    const logoutResult = await sendLogoutRequest(logoutEndpoint);
+    try {
+      // Include the authentication token in the request headers
+      const response = await axios.post(logoutEndpoint, null, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
-    if (logoutResult.success) {
       // Clear user authentication state
       setIsLoggedIn(false);
 
       // Clear tokens or session data on the client side (if applicable)
+      localStorage.removeItem("token");
+      localStorage.removeItem("adminToken"); // Remove any other tokens if needed
+      // ...
+
+      // Close the confirmation modal
+      setShowConfirmation(false);
+
+      // Log success message
+      console.log("Logout successful");
+
+      // Redirect to the login page or another appropriate page (if needed)
+      // history.push("/login");
+    } catch (error) {
+      // Handle other errors, such as network issues
+      console.error("Error during logout:", error);
+
+      // Clear user authentication state
+      setIsLoggedIn(false);
+
+      // Clear tokens or session data on the client side (if applicable)
+      localStorage.removeItem("token");
+      localStorage.removeItem("adminToken"); // Remove any other tokens if needed
       // ...
 
       // Close the confirmation modal
@@ -48,11 +75,6 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
 
       // Redirect to the login page or another appropriate page (if needed)
       // history.push("/login");
-    } else {
-      // Handle logout failure
-      console.error("Logout failed:", logoutResult.message);
-      // Display an error message to the user (if needed)
-      // ...
     }
   };
 
