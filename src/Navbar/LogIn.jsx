@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import log_in_foto from "../images/log_in_foto.png";
 
 function LogIn({ setIsLoggedIn }) {
@@ -53,16 +53,23 @@ function LogIn({ setIsLoggedIn }) {
 
         // Store token in localStorage
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userName", response.data.userName);
+        localStorage.setItem("isParentUser", response.data.isParentUser);
 
         // Set token in Axios headers for subsequent requests
-        axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${response.data.token}`;
         console.log("login successful:", response.data);
         setIsLoggedIn(true);
         navigate("/");
       } catch (error) {
         if (error.response) {
           // The request was made and the server responded with a status code
-          console.error("Server responded with a status code:", error.response.status);
+          console.error(
+            "Server responded with a status code:",
+            error.response.status
+          );
           console.error("Server response data:", error.response.data);
         } else if (error.request) {
           // The request was made but no response was received
@@ -77,7 +84,7 @@ function LogIn({ setIsLoggedIn }) {
   };
 
   return (
-    <div className="items-center justify-between h-screen bg-gray-100" >
+    <div className="items-center justify-between h-screen bg-gray-100">
       <div className="p-20 flex justify-center gap-20 items-center">
         <div className="pl-50 ml-50">
           <img src={log_in_foto} alt="log-in-foto" />
@@ -140,6 +147,13 @@ function LogIn({ setIsLoggedIn }) {
               Log In
             </button>
           </form>
+          <p className="mt-4 text-center">
+            Don't have an account?{" "}
+            <Link to="/register" className="text-blue-500">
+              Register here
+            </Link>
+            .
+          </p>
         </div>
       </div>
     </div>
