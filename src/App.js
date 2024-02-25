@@ -20,6 +20,12 @@ import AdminProtectedRoutes from "./AdminProtectedRoutes";
 import ProductPage from "./Components/ProductPage";
 import AdminLogin from "./Admin/AdminLogin";
 import AdminRegister from "./Admin/AdminRegister";
+import ChildRecommendations from "./Child/ChildPage";
+import { Dashboard, Recommend } from "@mui/icons-material";
+import Recommendations from "./Components/Recommendations";
+import SearchResults from "./Navbar/SearchResults";
+import DashboardPage from "./Components/Dashboard/DashboardPage";
+import AdminLogout from "./Admin/AdminLogout";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -77,6 +83,8 @@ function App() {
               <Route path="/contact-us" element={<ContactUs />} />
               <Route path="/about-us" element={<AboutUs />} />
               <Route path="/faq" element={<FAQ />} />
+              <Route path="/search-results" element={<SearchResults />} />
+              <Route path="/recommendations/:id" element={<Recommendations />} />
               {isLoggedIn ? (
                 <Route path="/register" element={<Navigate to="/" replace />} />
               ) : (
@@ -103,9 +111,13 @@ function App() {
                 <Route path="/admin-Register" element={<AdminRegister />} />
               )}
 
+              <Route path="/admin-logout" element={<AdminLogout />} />
               <Route path="/child-form" element={<ChildForm />} />
-              <Route path="/product/:id" element={<ProductPage />} />
-              <Route
+              <Route path="/recommendations" element={<ChildRecommendations />} />
+              <Route path="/products/:id" element={<ProductPage />} />
+              <Route path="/dashboard-page" element={<DashboardPage />} />
+
+              {/* <Route
                 path="/admin-protected/*"
                 element={
                   <AdminProtectedRoutes
@@ -114,8 +126,8 @@ function App() {
                   />
                 }
               />
+              <Route path="*" element={<Navigate to="/" replace />} /> */}
               {/* Catch-all route */}
-              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </MyContextProvider>
         </Router>

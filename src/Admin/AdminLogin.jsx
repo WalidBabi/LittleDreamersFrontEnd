@@ -9,7 +9,6 @@ const AdminLogin = () => {
   });
 
   const [errors, setErrors] = useState({});
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -44,13 +43,14 @@ const AdminLogin = () => {
     }
 
     try {
-      // Replace with your login API endpoint
       const response = await axios.post(
-        "https://your-api-endpoint/login",
+        "http://localhost:8000/api/AdminLogin",
         formData
       );
+
       // Store the token in localStorage or a secure storage mechanism
       localStorage.setItem("adminToken", response.data.token);
+
       // Redirect to the dashboard page after successful login
       navigate("/dashboard-page");
     } catch (error) {

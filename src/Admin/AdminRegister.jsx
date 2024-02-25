@@ -4,8 +4,8 @@ import axios from "axios";
 
 const AdminRegister = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -32,11 +32,11 @@ const AdminRegister = () => {
 
     // Validation
     const validationErrors = {};
-    if (!formData.firstName) {
-      validationErrors.firstName = "Please enter a first name";
+    if (!formData.first_name) {
+      validationErrors.first_name = "Please enter a first name";
     }
-    if (!formData.lastName) {
-      validationErrors.lastName = "Please enter a last name";
+    if (!formData.last_name) {
+      validationErrors.last_name = "Please enter a last name";
     }
     if (!formData.email) {
       validationErrors.email = "Please enter an email";
@@ -59,7 +59,7 @@ const AdminRegister = () => {
 
     try {
       // Replace with your registration API endpoint
-      await axios.post("https://your-api-endpoint/register", formData);
+      await axios.post("http://localhost:8000/api/AdminRegister", formData);
       // Redirect to login page after successful registration
       navigate("/admin-login");
     } catch (error) {
@@ -79,40 +79,40 @@ const AdminRegister = () => {
         <form onSubmit={handleSubmit}>
           <div className="mb-4 col-md-6">
             <label
-              htmlFor="firstName"
+              htmlFor="first_name"
               className="text-sm font-medium text-gray-700"
             >
               First Name <span className="text-red-400">*</span>
             </label>
             <input
               type="text"
-              id="firstName"
-              name="firstName"
-              value={formData.firstName}
+              id="first_name"
+              name="first_name"
+              value={formData.first_name}
               onChange={handleChange}
               className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
             />
-            {errors.firstName && (
-              <p className="text-red-500 text-sm">{errors.firstName}</p>
+            {errors.first_name && (
+              <p className="text-red-500 text-sm">{errors.first_name}</p>
             )}
           </div>
           <div className="mb-4">
             <label
-              htmlFor="lastName"
+              htmlFor="last_name"
               className="block text-sm font-medium text-gray-700"
             >
               Last Name <span className="text-red-400">*</span>
             </label>
             <input
               type="text"
-              id="lastName"
-              name="lastName"
-              value={formData.lastName}
+              id="last_name"
+              name="last_name"
+              value={formData.last_name}
               onChange={handleChange}
               className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
             />
-            {errors.lastName && (
-              <p className="text-red-500 text-sm">{errors.lastName}</p>
+            {errors.last_name && (
+              <p className="text-red-500 text-sm">{errors.last_name}</p>
             )}
           </div>
           <div className="mb-4">
