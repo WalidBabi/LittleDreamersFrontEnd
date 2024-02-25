@@ -1,15 +1,27 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import logo from "../images/logo.png";
-import { Link } from "react-router-dom";
-import { sendLogoutRequest } from "../API/LogoutApi";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import debounce from "lodash/debounce";
 import ShoppingCart from "./ShoppingCart";
+import SearchResults from "./SearchResults";
 
 function NavBar({ isLoggedIn, setIsLoggedIn }) {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   const [showCart, setShowCart] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
+
+  const handleClearSearch = () => {
+    // Clear the search term
+    setSearchTerm("");
+    // Clear the search results
+    setSearchResults([]);
+    // Reload the component by navigating to the current location
+    navigate("/");
+  };
 
   // Load cart items from local storage on component mount
   useEffect(() => {
@@ -17,13 +29,46 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
     setCartItems(storedCartItems);
   }, []);
 
+  // Use lodash's debounce to delay the API call after user stops typing
+  const debouncedSearch = debounce(async (value) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/search?query=${value}`
+      );
+      setSearchResults(response.data.data);
+      // Navigate to search results page with results as a URL parameter
+      navigate(`/search-results?query=${encodeURIComponent(value)}`);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
+  }, 200); // Adjust the delay as needed
+
   const handleInputChange = (event) => {
-    setSearchTerm(event.target.value);
+    const value = event.target.value;
+    setSearchTerm(value);
+    if (value === "") {
+      // If the search term is empty, clear the search results
+      setSearchResults([]);
+    } else {
+      debouncedSearch(value); // Call the debounced function
+    }
   };
 
-  const handleSearch = () => {
-    console.log("Performing search for:", searchTerm);
-    // Implement your search logic using the searchTerm state
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/search?query=${searchTerm}`
+      );
+      const searchResults = response.data.data;
+
+      // Update the search results state
+      setSearchResults(response.data.data);
+
+      // Navigate to search results page with results as a URL parameter
+      navigate(`/search-results?query=${encodeURIComponent(searchTerm)}`);
+    } catch (error) {
+      console.error("Error searching:", error);
+    }
   };
 
   const handleLogout = () => {
@@ -165,6 +210,57 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
     setShowCart(false);
   };
 
+  // Product rendering logic
+  const renderProducts = () => {
+    if (searchResults.length > 0) {
+      // Render search results
+      return (
+        <div className={`search-results ${showCart ? "hidden" : ""}`}>
+          {/* Render search results */}
+          <h3>Result of search:</h3>
+          <ul>
+            {searchResults.map((result) => (
+              <li key={result.id}>
+                <img
+                  src={result.image}
+                  alt={result.name}
+                  className="search-result-image"
+                />
+                <p>{result.name}</p>
+                <p>${result.price}</p>
+                {/* Add other product details as needed */}
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    } else {
+      // Render default product links
+      return (
+        <div className="flex justify-center space-x-6">
+          <Link to="/" className="nav-link text-white hover:text-red-500">
+            HOME
+          </Link>
+          <Link
+            to="/contact-us"
+            className="nav-link text-white hover:text-red-500"
+          >
+            CONTACT-US
+          </Link>
+          <Link
+            to="/about-us"
+            className="nav-link text-white hover:text-red-500"
+          >
+            ABOUT-US
+          </Link>
+          <Link to="/faq" className="nav-link text-white hover:text-red-500">
+            FAQ
+          </Link>
+        </div>
+      );
+    }
+  };
+
   return (
     <div className="bg-gray-800 py-3 px-8 flex items-center justify-between">
       {/* Logo on the left */}
@@ -195,29 +291,45 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
 
       {/* Search bar, Sign In/Register or Logout, and Shopping Cart */}
       <div className="flex items-center space-x-4">
-        <div className="md:w-72 mr-2">
-          {/* Search Input */}
-          <div className="relative flex w-full flex-wrap items-stretch">
+        <div className="relative md:w-72 mr-2">
+          <div className="flex items-center bg-white rounded-full shadow-sm overflow-hidden">
             <input
-              type="search"
+              type="text" // Change the type to "text"
               value={searchTerm}
               onChange={handleInputChange}
-              className="relative m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] bg-white text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
-              placeholder="Search"
-              aria-label="Search"
-              aria-describedby="button-addon1"
+              className="py-2 px-4 w-full text-gray-700 leading-tight focus:outline-none"
+              placeholder="Search for toys"
             />
+            {searchTerm && (
+              <button
+                className="text-blue-600 p-2 rounded-full transition-all duration-300 transform hover:scale-110 focus:outline-none focus:shadow-outline"
+                type="button"
+                onClick={handleClearSearch}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="h-6 w-6"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M6.293 6.293a1 1 0 011.414 0L10 8.586l2.293-2.293a1 1 0 111.414 1.414L11.414 10l2.293 2.293a1 1 0 11-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 01-1.414-1.414L8.586 10 6.293 7.707a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+            )}
             <button
-              className="relative flex items-center rounded-r bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white shadow-md transition duration-150 ease-in-out bg-gray-500 hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 active:shadow-lg"
+              className="text-white p-2 rounded-full transition-all duration-300 transform hover:scale-110 focus:outline-none focus:shadow-outline"
               type="button"
-              id="button-addon1"
               onClick={handleSearch}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
                 fill="currentColor"
-                className="h-5 w-5"
+                className="h-6 w-6"
               >
                 <path
                   fillRule="evenodd"
