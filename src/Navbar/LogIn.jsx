@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 import log_in_foto from "../images/log_in_foto.png";
+import style from "./style.css";
 
 function LogIn({ setIsLoggedIn }) {
   const navigate = useNavigate();
+  const { updateToken } = useAuth(); // Use useAuth to get updateToken function
+
   const [formData, setFormData] = useState(() => {
     const storedData = localStorage.getItem("formData");
     return storedData
@@ -19,6 +23,8 @@ function LogIn({ setIsLoggedIn }) {
     email: false,
     password: false,
   });
+
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     localStorage.setItem("formData", JSON.stringify(formData));
@@ -51,6 +57,9 @@ function LogIn({ setIsLoggedIn }) {
           password: formData.password,
         });
 
+        // Use the updateToken function from useAuth to update the token
+        updateToken(response.data.token);
+
         // Store token in localStorage
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userName", response.data.userName);
@@ -65,22 +74,49 @@ function LogIn({ setIsLoggedIn }) {
         navigate("/");
       } catch (error) {
         if (error.response) {
-          // The request was made and the server responded with a status code
           console.error(
             "Server responded with a status code:",
             error.response.status
           );
           console.error("Server response data:", error.response.data);
+
+          const errorMessage = error.response.data?.message; // Use optional chaining
+
+          if (errorMessage) {
+            let errorText = "An error occurred. Please try again later.";
+
+            if (errorMessage.includes("duplicate")) {
+              errorText =
+                "Username or email already exists. Please use a different one.";
+            } else if (errorMessage.includes("short")) {
+              errorText =
+                "Password is too short. Please use a longer password.";
+            } else if (errorMessage.includes("not found")) {
+              errorText = "User not found. Please check your credentials.";
+            } else if (errorMessage.includes("invalid")) {
+              errorText =
+                "Invalid credentials. Please check your email and password.";
+            }
+
+            setErrorMessage(errorText);
+          } else {
+            setErrorMessage("An error occurred. Please try again later.");
+          }
         } else if (error.request) {
-          // The request was made but no response was received
           console.error("No response received:", error.request);
+          setErrorMessage(
+            "No response received from the server. Please try again later."
+          );
         } else {
-          // Something happened in setting up the request that triggered an error
           console.error("Error:", error.message);
+          setErrorMessage("An error occurred. Please try again later.");
         }
-        // Handle the error state accordingly
       }
     }
+  };
+
+  const closeErrorMessage = () => {
+    setErrorMessage("");
   };
 
   return (
@@ -156,6 +192,15 @@ function LogIn({ setIsLoggedIn }) {
           </p>
         </div>
       </div>
+      {errorMessage && (
+        <div className="error-modal">
+          <div className="error-content">
+            <h2>Error</h2>
+            <p>{errorMessage}</p>
+            <button onClick={() => setErrorMessage("")}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
