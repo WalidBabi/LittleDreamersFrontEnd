@@ -71,7 +71,7 @@ const ChildForm = () => {
     }
 
     // Replace the following URL with your backend endpoint
-    const apiUrl = "http://localhost:8000/api/recommendations";
+    const apiUrl = "http://localhost:8000/api/Form";
 
     // Send form data to the backend
     axios
