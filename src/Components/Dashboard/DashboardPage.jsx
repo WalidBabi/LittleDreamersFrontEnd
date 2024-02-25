@@ -1,4 +1,3 @@
-// DashboardPage.js
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
@@ -6,19 +5,7 @@ import axios from "axios";
 import ConfirmModal from "../Confirm/ConfirmModal";
 
 const DashboardPage = () => {
-  const [toys, setToys] = useState([
-    {
-      id: 1,
-      name: "Toy 1",
-      quantity: 10,
-      age: "3-5 years",
-      price: "$20",
-      category: "Category A",
-      imageUrl: "https://example.com/toy1.jpg",
-    },
-    // Add more toy data as needed
-  ]);
-
+  const [toys, setToys] = useState([]);
   const [selectedToyId, setSelectedToyId] = useState(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
@@ -26,7 +13,14 @@ const DashboardPage = () => {
     // Fetch toys data from the API when the component mounts
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://your-api-endpoint/toys");
+        const token = localStorage.getItem("adminToken");
+
+        const response = await axios.get("http://localhost:8000/api/products", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         setToys(response.data);
       } catch (error) {
         console.error(
@@ -46,7 +40,14 @@ const DashboardPage = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`https://your-api-endpoint/toys/${selectedToyId}`);
+      const token = localStorage.getItem("adminToken");
+
+      await axios.delete(`http://localhost:8000/api/products/${selectedToyId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       setToys((prevToys) => prevToys.filter((toy) => toy.id !== selectedToyId));
     } catch (error) {
       console.error(
@@ -69,7 +70,7 @@ const DashboardPage = () => {
       <h2 className="text-2xl font-semibold mb-4">Toy Dashboard</h2>
       <Link
         to="/add-product"
-        className="flex items-center bg-blue-500 text-white py-2 px-4 rounded-md mb-4"
+        className="flex items-center bg-blue-500 w-40 text-white py-2 px-4 rounded-md mb-4"
       >
         <FaPlus className="mr-2" />
         Add New Toy
@@ -79,9 +80,9 @@ const DashboardPage = () => {
           <tr>
             <th className="border p-2">Toy Name</th>
             <th className="border p-2">Quantity</th>
-            <th className="border p-2">Age</th>
+            {/* <th className="border p-2">Age</th> */}
             <th className="border p-2">Price</th>
-            <th className="border p-2">Category</th>
+            {/* <th className="border p-2">Category</th> */}
             <th className="border p-2">Image</th>
             <th className="border p-2">Actions</th>
           </tr>
@@ -103,7 +104,10 @@ const DashboardPage = () => {
               </td>
               <td className="border p-2">
                 <div className="flex items-center">
-                  <Link to={`/edit-product/${toy.id}`} className="text-green-500 mx-2">
+                  <Link
+                    to={`/edit-product/${toy.id}`}
+                    className="text-green-500 mx-2"
+                  >
                     <FaEdit />
                   </Link>
                   <span> | </span>
