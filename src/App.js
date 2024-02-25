@@ -117,10 +117,6 @@ function App() {
 
               <Route path="/admin-logout" element={<AdminLogout />} />
               <Route path="/child-form" element={<ChildForm />} />
-              <Route
-                path="/recommendations"
-                element={<ChildRecommendations />}
-              />
               <Route path="/products/:id" element={<ProductPage />} />
               <Route path="/dashboard-page" element={<DashboardPage />} />
               <Route path="/add-product" element={<AddPage />} />
