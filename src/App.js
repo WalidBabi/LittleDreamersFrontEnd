@@ -26,6 +26,7 @@ import Recommendations from "./Components/Recommendations";
 import SearchResults from "./Navbar/SearchResults";
 import DashboardPage from "./Components/Dashboard/DashboardPage";
 import AdminLogout from "./Admin/AdminLogout";
+import AddPage from "./Components/CRUD/AddPage";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -84,7 +85,10 @@ function App() {
               <Route path="/about-us" element={<AboutUs />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/search-results" element={<SearchResults />} />
-              <Route path="/recommendations/:id" element={<Recommendations />} />
+              <Route
+                path="/recommendations/:id"
+                element={<Recommendations />}
+              />
               {isLoggedIn ? (
                 <Route path="/register" element={<Navigate to="/" replace />} />
               ) : (
@@ -113,10 +117,13 @@ function App() {
 
               <Route path="/admin-logout" element={<AdminLogout />} />
               <Route path="/child-form" element={<ChildForm />} />
-              <Route path="/recommendations" element={<ChildRecommendations />} />
+              <Route
+                path="/recommendations"
+                element={<ChildRecommendations />}
+              />
               <Route path="/products/:id" element={<ProductPage />} />
               <Route path="/dashboard-page" element={<DashboardPage />} />
-
+              <Route path="/add-product" element={<AddPage />} />
               {/* <Route
                 path="/admin-protected/*"
                 element={
