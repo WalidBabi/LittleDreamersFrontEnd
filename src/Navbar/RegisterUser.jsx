@@ -75,16 +75,16 @@ function RegisterUser() {
         console.log("Registration successful:", response.data);
 
         // Log in the user after successful registration
-        const loginResponse = await axios.post(
-          "http://localhost:8000/api/login",
-          {
-            email: formData.email,
-            password: formData.password,
-          }
-        );
+        // const loginResponse = await axios.post(
+        //   "http://localhost:8000/api/login",
+        //   {
+        //     email: formData.email,
+        //     password: formData.password,
+        //   }
+        // );
 
         // Store token in localStorage
-        localStorage.setItem("token", loginResponse.data.token);
+        // localStorage.setItem("token", loginResponse.data.token);
 
         // Set user information in localStorage
         localStorage.setItem("userName", userName);
