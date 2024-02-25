@@ -1,29 +1,36 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useCart } from "./CartContext";
+import { useParams } from "react-router-dom";
 
-const ProductPage = ({ productId }) => {
-  const [product, setProduct] = useState({
-    id: "your-product-id",
-    title: "Product Title",
-    price: 99.99,
-    company: "Disney",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    imageSrc: "https://via.placeholder.com/400",
-    dynamicRating: null,
-  });
+const ProductPage = () => {
+  const { id } = useParams();
+
+  const [product, setProduct] = useState([]);
+  const [description, setDescription] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [rating, setRating] = useState(null);
 
+  const infoItems = [
+    { label: "Category", value: description.category },
+    { label: "Age", value: description.age },
+    { label: "Gender", value: description.gender },
+    { label: "Holiday", value: description.holiday },
+    { label: "Skill Development", value: description.skill_development },
+    { label: "Play Pattern", value: description.play_pattern },
+  ];
+
+  console.log("ProductPage.js: id:", product.id);
   useEffect(() => {
-    // Check if productId is truthy before making the API request
-    if (productId) {
+    // Check if id is truthy before making the API request
+    if (id) {
       // Fetch product details from the backend
       axios
-        .get(`http://localhost:8000/api/product/${productId}`)
+        .get(`http://localhost:8000/api/products/${id}`)
         .then((response) => {
-          setProduct(response.data);
+          console.log("Product data:", response.data);
+          setProduct(response.data.product);
+          setDescription(response.data.description);
         })
         .catch((error) => {
           console.error("Error fetching product details:", error);
@@ -31,23 +38,23 @@ const ProductPage = ({ productId }) => {
     }
 
     // Fetch user's rating from local storage
-    const storedRating = localStorage.getItem(`${productId}-rating`);
+    const storedRating = localStorage.getItem(`${id}-rating`);
     if (storedRating !== null) {
       setRating(parseInt(storedRating, 10));
     }
-  }, [productId]);
+  }, [id]);
 
   const handleRatingChange = (newRating) => {
     setRating(newRating);
 
     // Save the rating to local storage
-    localStorage.setItem(`${productId}-rating`, newRating);
+    localStorage.setItem(`${id}-rating`, newRating);
 
     // Send the rating to the backend using Axios
     axios
       .post(`your-rating-api-endpoint`, {
-        productId: productId,
-        name: product.title,
+        productId: id,
+        name: product.name,
         rating: newRating,
       })
       .then((response) => {
@@ -73,7 +80,7 @@ const ProductPage = ({ productId }) => {
   const handleAddToBag = () => {
     const existingCartItem = addToCart({
       id: product.id,
-      name: product.title,
+      name: product.name,
       price: product.price,
       quantity: quantity,
       rating: rating,
@@ -93,7 +100,7 @@ const ProductPage = ({ productId }) => {
       // Otherwise, add a new item to the cart
       cartItems.push({
         id: product.id,
-        name: product.title,
+        name: product.name,
         price: product.price,
         quantity: quantity,
         rating: rating,
@@ -111,43 +118,20 @@ const ProductPage = ({ productId }) => {
   };
 
   return (
-    <div className="container mx-auto mt-8 mb-8 flex">
-      <div className="flex flex-col space-y-4 mr-8">
-        <img
-          src="https://via.placeholder.com/100"
-          alt="Product"
-          className="w-full rounded-lg shadow-lg"
-        />
-        <img
-          src="https://via.placeholder.com/100"
-          alt="Product"
-          className="w-full rounded-lg shadow-lg"
-        />
-        <img
-          src="https://via.placeholder.com/100"
-          alt="Product"
-          className="w-full rounded-lg shadow-lg"
-        />
-        <img
-          src="https://via.placeholder.com/100"
-          alt="Product"
-          className="w-full rounded-lg shadow-lg"
-        />
-      </div>
+    <div className="container mx-auto mt-4 mb-8 flex">
       <div className="w-1/2">
         <img
-          src={product.imageSrc}
+          src={product.image}
           alt="Product"
           className="w-full rounded-lg shadow-lg"
+          style={{ maxWidth: "100%", height: "95%" }}
         />
       </div>
       <div className="w-1/2 pl-8">
-        <h2 className="text-3xl font-semibold mb-4">{product.title}</h2>
+        <h2 className="text-3xl font-semibold mb-4">{product.name}</h2>
         <p className="text-2xl mb-4">${product.price}</p>
         {product.dynamicRating !== null && (
-          <p className="text-lg mb-4">
-            Dynamic Rating: {product.dynamicRating}
-          </p>
+          <p className="text-lg mb-4">Rating: {product.dynamicRating}</p>
         )}
         <div className="flex items-center mb-4">
           <p className="text-lg mb-2"></p>
@@ -185,9 +169,31 @@ const ProductPage = ({ productId }) => {
           Add to Bag
         </button>
         <div className="mt-8">
+          {/* Dynamic Information Section */}
+          <div className="mb-8 bg-gray-100 p-6 rounded-md shadow-lg">
+            <h3 className="text-lg font-extrabold mb-4 text-black">
+              Product Details
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
+              {infoItems.map((item) => (
+                <div
+                  key={item.label}
+                  className="flex flex-col items-center p-4 bg-white rounded-md shadow-md
+                  hover:bg-gray-200 transition duration-300"
+                >
+                  <span className="text-md font-semibold mb-2 text-gray-600">
+                    {item.label}
+                  </span>
+                  <p className="text-sm text-indigo-700">{item.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <h5 className="text-xl mb-4">{product.company}</h5>
           <h3 className="text-2xl font-semibold mb-4">Product Description</h3>
-          <p className="text-lg text-gray-700">{product.description}</p>
+          <p className="text-lg text-gray-700">{description.description}</p>
+          {console.log("ProductPage.js: id:", product)}
         </div>
       </div>
     </div>
