@@ -25,7 +25,7 @@ function SearchResults() {
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [categoryFilters, setCategoryFilters] = useState([]);
   const [currentUser, setCurrentUser] = useState(() => ({
-    name: localStorage.getItem("userName") || "Guest",
+    name: localStorage.getItem("fullName") || "Guest",
     isParentUser: true,
     children: [],
   }));
@@ -65,32 +65,6 @@ function SearchResults() {
     fetchUserDetails();
   }, []);
 
-  useEffect(() => {
-    const retrieveUserData = async () => {
-      try {
-        const response = await axios.get(`/api/user/${userName}`);
-        setCurrentUser(response.data);
-      } catch (error) {
-        console.error("Error retrieving user data:", error);
-      }
-    };
-
-    retrieveUserData();
-  }, [userName]);
-
-  useEffect(() => {
-    const retrieveUserData = async () => {
-      try {
-        const response = await axios.get(`/api/user/${userName}`);
-        setCurrentUser(response.data);
-      } catch (error) {
-        console.error("Error retrieving user data:", error);
-      }
-    };
-
-    retrieveUserData();
-  }, [userName]);
-
   // Update the following line to retrieve the search term from the URL
   const searchParams = new URLSearchParams(window.location.search);
   const searchTerm = searchParams.get("query");
@@ -110,19 +84,6 @@ function SearchResults() {
 
     fetchSearchResults();
   }, [searchTerm]);
-
-  useEffect(() => {
-    const retrieveUserData = async () => {
-      try {
-        const response = await axios.get(`/api/user/${userName}`);
-        setCurrentUser(response.data);
-      } catch (error) {
-        console.error("Error retrieving user data:", error);
-      }
-    };
-
-    retrieveUserData();
-  }, [userName]);
 
   useEffect(() => {
     const fetchCategoryFilters = async () => {
