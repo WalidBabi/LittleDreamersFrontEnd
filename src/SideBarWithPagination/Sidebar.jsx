@@ -14,7 +14,7 @@
     useEffect(() => {
       const delay = setTimeout(() => {
         setIsLoading(false);
-      }, 1000); // Adjust the delay time as needed
+      }, 1600); // Adjust the delay time as needed
 
       // Clean up the timeout to avoid memory leaks
       return () => clearTimeout(delay);
