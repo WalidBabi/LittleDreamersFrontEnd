@@ -92,14 +92,14 @@ const DashboardPage = () => {
             <tr key={toy.id}>
               <td className="border p-2">{toy.name}</td>
               <td className="border p-2">{toy.quantity}</td>
-              <td className="border p-2">{toy.age}</td>
+              {/* <td className="border p-2">{toy.age}</td> */}
               <td className="border p-2">{toy.price}</td>
-              <td className="border p-2">{toy.category}</td>
+              {/* <td className="border p-2">{toy.category}</td> */}
               <td className="border p-2">
                 <img
-                  src={toy.imageUrl}
+                  src={toy.image}
                   alt={toy.name}
-                  className="w-16 h-16 object-cover"
+                  className="w-24 h-24 object-cover"
                 />
               </td>
               <td className="border p-2">
