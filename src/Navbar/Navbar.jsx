@@ -15,12 +15,15 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleClearSearch = () => {
-    // Clear the search term
-    setSearchTerm("");
-    // Clear the search results
-    setSearchResults([]);
-    // Reload the component by navigating to the current location
-    navigate("/");
+    // Use setTimeout to ensure state is updated before navigating
+    setTimeout(() => {
+      // Clear the search term
+      setSearchTerm("");
+      // Clear the search results
+      setSearchResults([]);
+      // Reload the component by navigating to the current location
+      navigate("/");
+    }, 0);
   };
 
   // Load cart items from local storage on component mount
@@ -29,19 +32,22 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
     setCartItems(storedCartItems);
   }, []);
 
-  // Use lodash's debounce to delay the API call after user stops typing
+  // Use lodash's debounce to delay the API call after the user stops typing
   const debouncedSearch = debounce(async (value) => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/search?query=${value}`
-      );
-      setSearchResults(response.data.data);
-      // Navigate to search results page with results as a URL parameter
-      navigate(`/search-results?query=${encodeURIComponent(value)}`);
+      if (value.trim() !== "") {
+        // Check if the search term is not empty
+        const response = await axios.get(
+          `http://localhost:8000/api/search?query=${value}`
+        );
+        setSearchResults(response.data.data);
+        // Navigate to search results page with results as a URL parameter
+        navigate(`/search-results?query=${encodeURIComponent(value)}`);
+      }
     } catch (error) {
       console.error("Error fetching search results:", error);
     }
-  }, 200); // Adjust the delay as needed
+  }, 500); // Increase the debounce timeout as needed
 
   const handleInputChange = (event) => {
     const value = event.target.value;
@@ -49,6 +55,7 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
     if (value === "") {
       // If the search term is empty, clear the search results
       setSearchResults([]);
+      navigate("/");
     } else {
       debouncedSearch(value); // Call the debounced function
     }
@@ -86,7 +93,7 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-
+      
       // Clear user authentication state
       setIsLoggedIn(false);
 
