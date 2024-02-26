@@ -20,7 +20,6 @@ import AdminProtectedRoutes from "./AdminProtectedRoutes";
 import ProductPage from "./Components/ProductPage";
 import AdminLogin from "./Admin/AdminLogin";
 import AdminRegister from "./Admin/AdminRegister";
-import ChildRecommendations from "./Child/ChildPage";
 import { Dashboard, Recommend } from "@mui/icons-material";
 import Recommendations from "./Components/Recommendations";
 import SearchResults from "./Navbar/SearchResults";
@@ -36,7 +35,6 @@ function App() {
   const isAdmin = localStorage.getItem("adminToken");
 
   useEffect(() => {
-    // Attach event listeners for user activity
     const handleUserActivity = () => {
       // Clear existing timeout
       clearTimeout(activityTimeout);
@@ -57,17 +55,25 @@ function App() {
       setActivityTimeout(timeoutId);
     };
 
+    const handleMouseMove = () => {
+      handleUserActivity();
+    };
+
+    const handleKeyDown = () => {
+      handleUserActivity();
+    };
+
     // Set an initial timeout to logout after 30 minutes of inactivity
     handleUserActivity();
 
     // Attach event listeners for user activity
-    window.addEventListener("mousemove", handleUserActivity);
-    window.addEventListener("keydown", handleUserActivity);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("keydown", handleKeyDown);
 
     // Clean up event listeners on component unmount
     return () => {
-      window.removeEventListener("mousemove", handleUserActivity);
-      window.removeEventListener("keydown", handleUserActivity);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, []); // No dependencies to avoid triggering on every render
 
