@@ -1,9 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const ChildForm = () => {
   const navigate = useNavigate();
+  const [parentID, setParentID] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    // Ensure there is a token before making the request
+    if (token) {
+      axios
+        .get("http://localhost:8000/api/user-details", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setParentID(response.data.parent_id);
+        })
+        .catch((error) => {
+          console.error("Error fetching parent_id:", error);
+
+          if (error.response) {
+            console.error("Response data:", error.response.data);
+            console.error("Response status:", error.response.status);
+
+            // Handle authentication errors (e.g., token expired)
+            if (error.response.status === 401) {
+              console.error("Authentication error: Token may be expired");
+              // Redirect to login or take appropriate action
+            }
+          } else if (error.request) {
+            console.error("No response received:", error.request);
+          } else {
+            console.error("Error setting up the request:", error.message);
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, []);
 
   const [formData, setFormData] = useState({
     childName: "",
@@ -35,8 +75,17 @@ const ChildForm = () => {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Wait for the parent_id to be fetched before submitting the form
+    await fetchParentID();
+
+    // Add parent_id to the form data
+    const formDataWithParentID = {
+      ...formData,
+      parent_id: parentID,
+    };
 
     // Check for empty fields
     const errors = {};
@@ -75,7 +124,7 @@ const ChildForm = () => {
 
     // Send form data to the backend
     axios
-      .post(apiUrl, formData)
+      .post(apiUrl, formDataWithParentID)
       .then((response) => {
         console.log("Form submitted successfully!", response.data);
         navigate("/");
@@ -97,6 +146,47 @@ const ChildForm = () => {
         }
       });
   };
+
+  const fetchParentID = async () => {
+    // Make the API call to fetch parent_id
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/user-details",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setParentID(response.data.parent_id);
+      } catch (error) {
+        console.error("Error fetching parent_id:", error);
+
+        if (error.response) {
+          console.error("Response data:", error.response.data);
+          console.error("Response status:", error.response.status);
+
+          // Handle authentication errors (e.g., token expired)
+          if (error.response.status === 401) {
+            console.error("Authentication error: Token may be expired");
+            // Redirect to login or take appropriate action
+          }
+        } else if (error.request) {
+          console.error("No response received:", error.request);
+        } else {
+          console.error("Error setting up the request:", error.message);
+        }
+      }
+    }
+  };
+
+  if (loading) {
+    return <p>Loading...</p>; // or a spinner component
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center py-8 bg-gray-100">

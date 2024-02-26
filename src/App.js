@@ -26,6 +26,7 @@ import SearchResults from "./Navbar/SearchResults";
 import DashboardPage from "./Components/Dashboard/DashboardPage";
 import AdminLogout from "./Admin/AdminLogout";
 import AddPage from "./Components/CRUD/AddPage";
+import EditPage from "./Components/CRUD/EditPage";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -33,6 +34,8 @@ function App() {
     return !!localStorage.getItem("token");
   });
   const isAdmin = localStorage.getItem("adminToken");
+  const issAdmin = isAdmin ? true : false;
+  // console.log("isAdmin", issAdmin);
 
   useEffect(() => {
     const handleUserActivity = () => {
@@ -91,6 +94,7 @@ function App() {
               <Route path="/about-us" element={<AboutUs />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/search-results" element={<SearchResults />} />
+              <Route path="/products/:id" element={<ProductPage />} />
               <Route
                 path="/recommendations/:id"
                 element={<Recommendations />}
@@ -121,11 +125,42 @@ function App() {
                 <Route path="/admin-Register" element={<AdminRegister />} />
               )}
 
-              <Route path="/admin-logout" element={<AdminLogout />} />
-              <Route path="/child-form" element={<ChildForm />} />
-              <Route path="/products/:id" element={<ProductPage />} />
-              <Route path="/dashboard-page" element={<DashboardPage />} />
-              <Route path="/add-product" element={<AddPage />} />
+              {!isLoggedIn ? (
+                <Route path="/" element={<Navigate to="/" replace />} />
+              ) : (
+                <Route path="/child-form" element={<ChildForm />} />
+              )}
+
+              {!issAdmin ? (
+                <Route path="/" element={<Navigate to="/" replace />} />
+              ) : (
+                <Route path="/dashboard-page" element={<DashboardPage />} />
+              )}
+
+              {!issAdmin ? (
+                <Route path="/" element={<Navigate to="/" replace />} />
+              ) : (
+                <Route path="/add-product" element={<AddPage />} />
+              )}
+
+              {!issAdmin ? (
+                <Route path="/" element={<Navigate to="/" replace />} />
+              ) : (
+                <Route path="/edit-product/:id" element={<EditPage />} />
+              )}
+
+              {!issAdmin ? (
+                <Route path="/" element={<Navigate to="/" replace />} />
+              ) : (
+                <Route path="/admin-logout" element={<AdminLogout />} />
+              )}
+
+              <Route path="*" element={<Navigate to="/" replace />} />
+
+              {/* <Route path="/child-form" element={<ChildForm />} /> */}
+              {/* <Route path="/admin-logout" element={<AdminLogout />} /> */}
+              {/* <Route path="/dashboard-page" element={<DashboardPage />} /> */}
+              {/* <Route path="/add-product" element={<AddPage />} /> */}
               {/* <Route
                 path="/admin-protected/*"
                 element={
@@ -135,7 +170,7 @@ function App() {
                   />
                 }
               />
-              <Route path="*" element={<Navigate to="/" replace />} /> */}
+               */}
               {/* Catch-all route */}
             </Routes>
           </MyContextProvider>

@@ -7,7 +7,7 @@ import style from "./style.css";
 
 function LogIn({ setIsLoggedIn }) {
   const navigate = useNavigate();
-  const { updateToken } = useAuth(); // Use useAuth to get updateToken function
+  // const { updateToken } = useAuth(); // Use useAuth to get updateToken function
 
   const [formData, setFormData] = useState(() => {
     const storedData = localStorage.getItem("formData");
@@ -58,7 +58,7 @@ function LogIn({ setIsLoggedIn }) {
         });
 
         // Use the updateToken function from useAuth to update the token
-        updateToken(response.data.token);
+        // updateToken(response.data.token);
 
         // Store token in localStorage
         localStorage.setItem("token", response.data.token);

@@ -23,13 +23,13 @@ const AdminProtectedRoutes = ({ isLoggedIn, isAdmin }) => {
         element={isLoggedIn ? <Navigate to="/" replace /> : <AdminRegister />}
       /> */}
 
-      {isLoggedIn && isAdmin ? (
+      {/* {isLoggedIn && isAdmin ? (
         <Route path="/dashboard-page" element={<Navigate to="/dashboard-page" replace />} />
       ) : (
         <Route path="/admin-register" element={<AdminRegister />} />
-      )}
+      )} */}
 
-      <Route
+      {/* <Route
         path="/dashboard-page"
         element={
           isLoggedIn ? (
@@ -43,7 +43,7 @@ const AdminProtectedRoutes = ({ isLoggedIn, isAdmin }) => {
           )
         }
       />
-      <Route path="/admin-login" element={<AdminLogin />} />
+      <Route path="/admin-login" element={<AdminLogin />} /> */}
     </Routes>
   );
 };
