@@ -139,17 +139,20 @@ function SearchResults() {
     fetchCategoryFilters();
   }, []);
 
-  const toggleFilter = (filter) => {
-    setFilters({ ...filters, [filter]: !filters[filter] });
-  };
+  // const toggleFilter = (filter) => {
+  //   setFilters((prevFilters) => ({
+  //     ...prevFilters,
+  //     [filter]: !prevFilters[filter],
+  //   }));
+  // };
 
-  const sendApiRequest = (id, parentUserName, childUserName) => {
-    console.log("Sending API request with data:", {
-      id,
-      parentUserName,
-      childUserName,
-    });
-  };
+  // const sendApiRequest = (id, parentUserName, childUserName) => {
+  //   console.log("Sending API request with data:", {
+  //     id,
+  //     parentUserName,
+  //     childUserName,
+  //   });
+  // };
 
   const handleAccountSelect = (account) => {
     setSelectedAccount(account);

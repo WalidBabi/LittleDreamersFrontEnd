@@ -20,7 +20,6 @@ const ProductPage = () => {
     { label: "Play Pattern", value: description.play_pattern },
   ];
 
-  console.log("ProductPage.js: id:", product.id);
   useEffect(() => {
     // Check if id is truthy before making the API request
     if (id) {
@@ -28,7 +27,8 @@ const ProductPage = () => {
       axios
         .get(`http://localhost:8000/api/products/${id}`)
         .then((response) => {
-          console.log("Product data:", response.data);
+          // just to check Product data
+          //console.log("Product data:", response.data);
           setProduct(response.data.product);
           setDescription(response.data.description);
         })
@@ -193,7 +193,6 @@ const ProductPage = () => {
           <h5 className="text-xl mb-4">{product.company}</h5>
           <h3 className="text-2xl font-semibold mb-4">Product Description</h3>
           <p className="text-lg text-gray-700">{description.description}</p>
-          {console.log("ProductPage.js: id:", product)}
         </div>
       </div>
     </div>

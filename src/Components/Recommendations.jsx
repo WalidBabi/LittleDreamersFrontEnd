@@ -65,32 +65,6 @@ const Recommendations = () => {
   }, []);
 
   useEffect(() => {
-    const retrieveUserData = async () => {
-      try {
-        const response = await axios.get(`/api/user/${userName}`);
-        setCurrentUser(response.data);
-      } catch (error) {
-        console.error("Error retrieving user data:", error);
-      }
-    };
-
-    retrieveUserData();
-  }, [userName]);
-
-  useEffect(() => {
-    const retrieveUserData = async () => {
-      try {
-        const response = await axios.get(`/api/user/${userName}`);
-        setCurrentUser(response.data);
-      } catch (error) {
-        console.error("Error retrieving user data:", error);
-      }
-    };
-
-    retrieveUserData();
-  }, [userName]);
-
-  useEffect(() => {
     const fetchRecommendations = async () => {
       try {
         const response = await axios.get(
@@ -105,32 +79,35 @@ const Recommendations = () => {
     fetchRecommendations();
   }, [id]);
 
-  useEffect(() => {
-    const fetchCategoryFilters = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:8000/api/category-filters"
-        );
-        setCategoryFilters(response.data);
-      } catch (error) {
-        console.error("Error fetching category filters:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchCategoryFilters = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         "http://localhost:8000/api/category-filters"
+  //       );
+  //       setCategoryFilters(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching category filters:", error);
+  //     }
+  //   };
 
-    fetchCategoryFilters();
-  }, []);
+  //   fetchCategoryFilters();
+  // }, []);
 
-  const toggleFilter = (filter) => {
-    setFilters({ ...filters, [filter]: !filters[filter] });
-  };
+  // const toggleFilter = (filter) => {
+  //   setFilters((prevFilters) => ({
+  //     ...prevFilters,
+  //     [filter]: !prevFilters[filter],
+  //   }));
+  // };
 
-  const sendApiRequest = (id, parentUserName, childUserName) => {
-    console.log("Sending API request with data:", {
-      id,
-      parentUserName,
-      childUserName,
-    });
-  };
+  // const sendApiRequest = (id, parentUserName, childUserName) => {
+  //   console.log("Sending API request with data:", {
+  //     id,
+  //     parentUserName,
+  //     childUserName,
+  //   });
+  // };
 
   const handleAccountSelect = (account) => {
     setSelectedAccount(account);

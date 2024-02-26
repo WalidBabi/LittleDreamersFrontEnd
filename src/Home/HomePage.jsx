@@ -22,7 +22,7 @@ const HomePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [categoryFilters, setCategoryFilters] = useState([]);
   const [currentUser, setCurrentUser] = useState(() => ({
-    name: localStorage.getItem("userName") || "Guest",
+    name: localStorage.getItem("fullName") || "Guest",
     isParentUser: true,
     children: [],
   }));
@@ -63,19 +63,6 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    const retrieveUserData = async () => {
-      try {
-        const response = await axios.get(`/api/user/${userName}`);
-        setCurrentUser(response.data);
-      } catch (error) {
-        console.error("Error retrieving user data:", error);
-      }
-    };
-
-    retrieveUserData();
-  }, [userName]);
-
-  useEffect(() => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -101,44 +88,49 @@ const HomePage = () => {
     fetchData();
   }, [selectedAccount]);
 
-  useEffect(() => {
-    const fetchCategoryFilters = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:8000/api/category-filters"
-        );
-        setCategoryFilters(response.data);
-      } catch (error) {
-        console.error("Error fetching category filters:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchCategoryFilters = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         "http://localhost:8000/api/category-filters"
+  //       );
+  //       setCategoryFilters(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching category filters:", error);
+  //     }
+  //   };
 
-    fetchCategoryFilters();
-  }, []);
+  //   fetchCategoryFilters();
+  // }, []);
 
-  const toggleFilter = (filter) => {
-    setFilters({ ...filters, [filter]: !filters[filter] });
-  };
+  // const toggleFilter = (filter) => {
+  //   setFilters((prevFilters) => ({
+  //     ...prevFilters,
+  //     [filter]: !prevFilters[filter],
+  //   }));
+  // };
 
-  const sendApiRequest = (id, parentUserName, childUserName) => {
-    console.log("Sending API request with data:", {
-      id,
-      parentUserName,
-      childUserName,
-    });
-  };
+  // const sendApiRequest = (id, parentUserName, childUserName) => {
+  //   console.log("Sending API request with data:", {
+  //     id,
+  //     parentUserName,
+  //     childUserName,
+  //   });
+  // };
 
   const handleAccountSelect = (account) => {
-    setSelectedAccount(account);
+    if (account) {
+      setSelectedAccount(account);
 
-    setCurrentUser({
-      name: account.fullName,
-      isParentUser: account.children && account.children.length > 0,
-      children: account.children || [],
-    });
+      setCurrentUser({
+        name: account.fullName || "", // Ensure fullName is not accessed if account.fullName is null or undefined
+        isParentUser: account.children && account.children.length > 0,
+        children: account.children || [],
+      });
 
-    if (!account.children) {
-      fetchProducts(account.parent_id);
+      if (!account.children) {
+        fetchProducts(account.parent_id);
+      }
     }
   };
 

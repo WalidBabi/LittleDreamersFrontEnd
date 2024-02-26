@@ -17,7 +17,6 @@ const ShoppingCart = ({
   handleBuyClick,
   calculateTotalPrice,
 }) => {
-  console.log("ShoppingCart received cartItems:", cartItems);
   return (
     <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
       <div className="bg-white p-6 rounded-md shadow-lg max-w-md w-full">
