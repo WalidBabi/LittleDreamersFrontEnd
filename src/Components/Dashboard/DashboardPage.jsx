@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import ConfirmModal from "../Confirm/ConfirmModal";
+import Pagination from "../../SideBarWithPagination/Pagination";
+import LoadingAnimation from "../../Loading/LoadingAnimation";
 
 const DashboardPage = () => {
+  const navigate = useNavigate();
+
   const [toys, setToys] = useState([]);
   const [selectedToyId, setSelectedToyId] = useState(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [toysPerPage] = useState(10); // Set the number of toys per page
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     // Fetch toys data from the API when the component mounts
@@ -27,11 +34,22 @@ const DashboardPage = () => {
           "Error fetching toys:",
           error.response?.data || error.message
         );
+      } finally {
+        // Set loading to false after fetching data
+        setLoading(false);
       }
     };
 
     fetchData();
   }, []); // Empty dependency array ensures the effect runs only once when the component mounts
+
+  // Get current toys
+  const indexOfLastToy = currentPage * toysPerPage;
+  const indexOfFirstToy = indexOfLastToy - toysPerPage;
+  const currentToys = toys.slice(indexOfFirstToy, indexOfLastToy);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleDelete = (toyId) => {
     setSelectedToyId(toyId);
@@ -42,22 +60,27 @@ const DashboardPage = () => {
     try {
       const token = localStorage.getItem("adminToken");
 
-      await axios.delete(`http://localhost:8000/api/products/${selectedToyId}`, {
+      await axios.delete(`http://localhost:8000/api/delete/${selectedToyId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
+      // Filter out the deleted toy from the toys state
       setToys((prevToys) => prevToys.filter((toy) => toy.id !== selectedToyId));
+      // setIsConfirmModalOpen(false);
+
+      // Log a success message to the console
+      console.log(`Toy with ID ${selectedToyId} deleted successfully`);
     } catch (error) {
       console.error(
         `Error deleting toy with ID ${selectedToyId}:`,
         error.response?.data || error.message
       );
     } finally {
-      setSelectedToyId(null);
-      setIsConfirmModalOpen(false);
+      closeConfirmModal();
     }
+    navigate("/dashboard-page");
   };
 
   const closeConfirmModal = () => {
@@ -65,11 +88,16 @@ const DashboardPage = () => {
     setIsConfirmModalOpen(false);
   };
 
+  // Render the LoadingAnimation while data is being fetched
+  if (loading) {
+    return <LoadingAnimation />;
+  }
+
   return (
     <div className="container mx-auto mt-8">
       <h2 className="text-2xl font-semibold mb-4">Toy Dashboard</h2>
       <Link
-        to="/add-product"
+        to="/add-toy"
         className="flex items-center bg-blue-500 w-40 text-white py-2 px-4 rounded-md mb-4"
       >
         <FaPlus className="mr-2" />
@@ -88,7 +116,7 @@ const DashboardPage = () => {
           </tr>
         </thead>
         <tbody>
-          {toys.map((toy) => (
+          {currentToys.map((toy) => (
             <tr key={toy.id}>
               <td className="border p-2">{toy.name}</td>
               <td className="border p-2">{toy.quantity}</td>
@@ -105,7 +133,7 @@ const DashboardPage = () => {
               <td className="border p-2">
                 <div className="flex items-center">
                   <Link
-                    to={`/edit-product/${toy.id}`}
+                    to={`/edit-toy/${toy.id}`}
                     className="text-green-500 mx-2"
                   >
                     <FaEdit />
@@ -123,7 +151,13 @@ const DashboardPage = () => {
           ))}
         </tbody>
       </table>
-
+      <div className="pb-6">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(toys.length / toysPerPage)}
+          paginate={paginate}
+        />
+      </div>
       <ConfirmModal
         isOpen={isConfirmModalOpen}
         onConfirm={confirmDelete}
