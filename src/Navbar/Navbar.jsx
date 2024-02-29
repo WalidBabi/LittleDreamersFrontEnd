@@ -4,9 +4,12 @@ import logo from "../images/logo.png";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import debounce from "lodash/debounce";
 import ShoppingCart from "./ShoppingCart";
-import SearchResults from "./SearchResults";
+import SearchResults from "../Components/SearchResults";
+import LoadingAnimation from "../Loading/LoadingAnimation"; // Import the LoadingAnimation component
+import throttle from "lodash/throttle";
 
 function NavBar({ isLoggedIn, setIsLoggedIn }) {
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -32,8 +35,8 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
     setCartItems(storedCartItems);
   }, []);
 
-  // Use lodash's debounce to delay the API call after the user stops typing
-  const debouncedSearch = debounce(async (value) => {
+  // Use lodash's throttle to limit the API calls while typing
+  const throttledSearch = throttle(async (value) => {
     try {
       if (value.trim() !== "") {
         // Check if the search term is not empty
@@ -47,17 +50,25 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
     } catch (error) {
       console.error("Error fetching search results:", error);
     }
-  }, 500); // Increase the debounce timeout as needed
+  }, 500); // Adjust the throttle timeout as needed
 
-  const handleInputChange = (event) => {
+  const handleInputChange = async (event) => {
     const value = event.target.value;
     setSearchTerm(value);
-    if (value === "") {
-      // If the search term is empty, clear the search results
-      setSearchResults([]);
-      navigate("/");
-    } else {
-      debouncedSearch(value); // Call the debounced function
+    throttledSearch(value); // Call the throttled search function
+    try {
+      if (value.trim() !== "") {
+        const response = await axios.get(
+          `http://localhost:8000/api/search?query=${value}`
+        );
+        setSearchResults(response.data.data);
+        navigate(`/search-results?query=${encodeURIComponent(value)}`);
+      } else {
+        setSearchResults([]);
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Error fetching search results:", error);
     }
   };
 
@@ -84,6 +95,8 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
   };
 
   const handleConfirmLogout = async () => {
+    setIsLoading(true); // Show loading animation
+
     const logoutEndpoint = "http://localhost:8000/api/logout";
 
     try {
@@ -93,14 +106,14 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      
+
       // Clear user authentication state
       setIsLoggedIn(false);
 
       // Clear tokens or session data on the client side (if applicable)
       localStorage.removeItem("token");
-      localStorage.removeItem("adminToken"); // Remove any other tokens if needed
-      // ...
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("cartItems"); // Remove cartItems
 
       // Close the confirmation modal
       setShowConfirmation(false);
@@ -110,6 +123,9 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
 
       // Redirect to the login page or another appropriate page (if needed)
       // history.push("/login");
+
+      // Reload the entire project
+      window.location.reload(true); // Pass true to force a full page reload
     } catch (error) {
       // Handle other errors, such as network issues
       console.error("Error during logout:", error);
@@ -127,6 +143,11 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
 
       // Redirect to the login page or another appropriate page (if needed)
       // history.push("/login");
+
+      // Reload the entire project
+      window.location.reload(true); // Pass true to force a full page reload
+    } finally {
+      setIsLoading(false); // Hide loading animation regardless of success or failure
     }
   };
 
@@ -263,6 +284,12 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
           <Link to="/faq" className="nav-link text-white hover:text-red-500">
             FAQ
           </Link>
+          <Link
+            to="/User-product-policy"
+            className="nav-link text-white hover:text-red-500"
+          >
+            POLICIES
+          </Link>
         </div>
       );
     }
@@ -293,6 +320,12 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
         </Link>
         <Link to="/faq" className="nav-link text-white hover:text-red-500">
           FAQ
+        </Link>
+        <Link
+          to="/User-product-policy"
+          className="nav-link text-white hover:text-red-500"
+        >
+          POLICIES
         </Link>
       </div>
 
@@ -348,6 +381,10 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
           </div>
         </div>
 
+        {/* Render the loading animation when isLoading is true */}
+        {isLoading && <LoadingAnimation />}
+
+        {/* {console.log("isLoggedInnnnnnn",isLoggedIn)}      */}
         {isLoggedIn ? (
           <>
             <button
