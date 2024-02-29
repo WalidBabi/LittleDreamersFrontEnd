@@ -78,39 +78,32 @@ const EditToy = () => {
   const handleChange = (e) => {
     const { name, value, type } = e.target;
 
-    setFormData((prevData) => ({
-      ...prevData,
-      product: {
-        ...prevData.product,
-        [name]: type === "file" ? e.target.files[0] : value,
-      },
-      description: {
-        ...prevData.description,
-        [name]: type === "file" ? e.target.files[0] : value,
-      },
-    }));
+    if (name === "company") {
+      // If the changed field is 'company', update it separately
+      setFormData((prevData) => ({
+        ...prevData,
+        company: value,
+      }));
+    } else {
+      // Otherwise, update the 'description' fields as before
+      setFormData((prevData) => ({
+        ...prevData,
+        product: {
+          ...prevData.product,
+          [name]: type === "file" ? e.target.files[0] : value,
+        },
+        description: {
+          ...prevData.description,
+          [name]: value,
+        },
+      }));
+    }
 
     // If the input is an image, update the image preview
     if (type === "file" && e.target.files.length > 0) {
       setImagePreview(URL.createObjectURL(e.target.files[0]));
     }
 
-    if (type === "file") {
-      const file = e.target.files[0];
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: file,
-      }));
-
-      // Display image preview
-      const previewURL = URL.createObjectURL(file);
-      setImagePreview(previewURL);
-    } else {
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
     // Clear the error when the user starts typing again
     setErrors((prevErrors) => ({
       ...prevErrors,
@@ -148,25 +141,25 @@ const EditToy = () => {
     }
 
     if (!formData.description.gender || !formData.description.gender.trim()) {
-      newErrors.description.gender = "Gender is required";
+      newErrors.gender = "Gender is required"; // Fix the property name here
     }
 
     if (!formData.description.holiday || !formData.description.holiday.trim()) {
-      newErrors.description.holiday = "Holiday is required";
+      newErrors.holiday = "Holiday is required";
     }
 
     if (
       !formData.description.skill_development ||
       !formData.description.skill_development.trim()
     ) {
-      newErrors.description.skill_development = "Skill Development is required";
+      newErrors.skill_development = "Skill Development is required";
     }
 
     if (
       !formData.description.play_pattern ||
       !formData.description.play_pattern.trim()
     ) {
-      newErrors.description.play_pattern = "PlayPattern is required";
+      newErrors.play_pattern = "PlayPattern is required";
     }
 
     if (!formData.product.price || isNaN(formData.product.price)) {
@@ -180,8 +173,6 @@ const EditToy = () => {
     if (!formData.description.age || isNaN(formData.description.age)) {
       newErrors.age = "Age is required and must be a valid number";
     }
-
-    // Add more validation checks for other fields
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
