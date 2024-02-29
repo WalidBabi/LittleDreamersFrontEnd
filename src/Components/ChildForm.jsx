@@ -184,13 +184,12 @@ const ChildForm = () => {
     }
   };
 
-  if (loading) {
-    return <p>Loading...</p>; // or a spinner component
-  }
-
   return (
     <div className="min-h-screen flex items-center justify-center py-8 bg-gray-100">
       <div className="max-w-3xl w-full p-6 bg-white rounded-md shadow-md">
+        <div className="mb-4 text-gray-600 bg-gray-300 rounded-md p-4">
+          Our website provided toy recommendations from 1 to 10 years old.
+        </div>
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Child Information Section */}
           <fieldset className="border p-4 rounded-md mb-6">
@@ -229,12 +228,49 @@ const ChildForm = () => {
                   name="childAge"
                   value={formData.childAge}
                   onChange={handleChange}
+                  onKeyDown={(e) => {
+                    // Allow the Backspace key
+                    if (e.key === "Backspace") {
+                      return;
+                    }
+                    // Prevent typing non-numeric characters
+                    if (isNaN(parseInt(e.key))) {
+                      e.preventDefault();
+                    }
+                    // Allow numbers between 1 and 10
+                    const validKeys = [
+                      "1",
+                      "2",
+                      "3",
+                      "4",
+                      "5",
+                      "6",
+                      "7",
+                      "8",
+                      "9",
+                      "0",
+                    ];
+                    if (!validKeys.includes(e.key)) {
+                      e.preventDefault();
+                    }
+                    // Prevent typing '0' or '00'
+                    if (e.target.value === "0" || e.target.value === "00") {
+                      e.preventDefault();
+                    }
+                    // Ensure the value does not exceed two digits
+                    const newValue = e.target.value + e.key;
+                    if (newValue.length > 2 || parseInt(newValue) > 10 || parseInt(newValue) === 0) {
+                      e.preventDefault();
+                    }
+                  }}
                   required
-                  min="0" // Ensure age is not negative
+                  min="1"
+                  max="10"
                   className={`mt-1 p-2 w-full border rounded-md ${
                     fieldErrors.childAge ? "border-red-500" : ""
                   }`}
                 />
+
                 {fieldErrors.childAge && (
                   <p className="text-red-500 text-sm mt-1">
                     {fieldErrors.childAge}
