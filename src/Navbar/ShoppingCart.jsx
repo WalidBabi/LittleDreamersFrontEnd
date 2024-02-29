@@ -38,12 +38,6 @@ const ShoppingCart = ({
                 key={item.id}
                 className="mb-4 border-b border-gray-300 pb-4 flex items-center"
               >
-                {/* Product Image */}
-                <img
-                  src={item.imageSrc}
-                  alt={item.name}
-                  className="w-16 h-16 object-cover rounded mr-4"
-                />
                 {/* Product Details */}
                 <div className="flex-1">
                   <p className="text-lg font-semibold">{item.name}</p>
