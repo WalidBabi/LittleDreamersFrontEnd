@@ -100,16 +100,36 @@ const Sidebar = ({
   };
 
   const handleApplyFilters = () => {
-    // Send the selected filters via Axios API call
+    // Convert selected filters to numbers
+    const filterSubmitData = {
+      categories: selectedFilters.category.map(
+        (key) => filterData.category[key]
+      ),
+      ages: selectedFilters.age.map((key) => filterData.age[key]),
+      holidays: selectedFilters.holiday.map((key) => filterData.holiday[key]),
+      skill_developments: selectedFilters.skill_development.map(
+        (key) => filterData.skill_development[key]
+      ),
+      companies: selectedFilters.companies,
+      price: {
+        min: Number(selectedFilters.price.min).toFixed(2),
+        max: Number(selectedFilters.price.max).toFixed(2),
+      },
+    };
+
+    // Print the filterSubmitData in the console
+    console.log("Filter Submit Data:", filterSubmitData);
+
+    // Send the filterSubmitData via Axios API call
     axios
-      .post("http://localhost:8000/api/filterSubmit", selectedFilters)
+      .get("http://localhost:8000/api/filterSubmit", filterSubmitData)
       .then((response) => {
-        console.log("Filters sent successfully:", selectedFilters);
+        console.log("Filters sent successfully:", filterSubmitData);
       })
       .catch((error) => {
         console.error("Error sending filters:", error);
       });
-    //setActiveHeader(false);
+    // setActiveHeader(false);
   };
 
   const handleCancelFilter = () => {
