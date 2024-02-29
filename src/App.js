@@ -20,13 +20,18 @@ import AdminProtectedRoutes from "./AdminProtectedRoutes";
 import ProductPage from "./Components/ProductPage";
 import AdminLogin from "./Admin/AdminLogin";
 import AdminRegister from "./Admin/AdminRegister";
-import { Dashboard, Recommend } from "@mui/icons-material";
+import { Dashboard, Filter, Recommend } from "@mui/icons-material";
 import Recommendations from "./Components/Recommendations";
-import SearchResults from "./Navbar/SearchResults";
+import SearchResults from "./Components/SearchResults";
 import DashboardPage from "./Components/Dashboard/DashboardPage";
 import AdminLogout from "./Admin/AdminLogout";
 import AddPage from "./Components/CRUD/AddPage";
 import EditPage from "./Components/CRUD/EditPage";
+import AdminNavbar from "./Admin/AdminNavbar";
+import Filters from "./Components/Filters";
+import AddToy from "./Components/CRUD/AddToy";
+import EditToy from "./Components/CRUD/EditToy";
+import PolicyComponent from "./Components/Policy/PolicyComponent";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -87,11 +92,25 @@ function App() {
       <Fragment>
         <Router>
           <MyContextProvider>
-            <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+            {/* Hide NavBar when isAdmin is true or the path is "/admin-login" or "/admin-register" */}
+            {!isAdmin &&
+              !["/admin-login", "/admin-register"].includes(
+                window.location.pathname
+              ) && (
+                <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+              )}
+
+            {/* AdminNavbar is rendered conditionally for admin routes */}
+            {issAdmin && <AdminNavbar />}
+
             <Routes>
               <Route exact path="/" element={<HomePage />} />
               <Route path="/contact-us" element={<ContactUs />} />
               <Route path="/about-us" element={<AboutUs />} />
+              <Route
+                path="/User-product-policy"
+                element={<PolicyComponent />}
+              />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/search-results" element={<SearchResults />} />
               <Route path="/products/:id" element={<ProductPage />} />
@@ -99,6 +118,7 @@ function App() {
                 path="/recommendations/:id"
                 element={<Recommendations />}
               />
+              <Route path="/filters" element={<Filters />} />
               {isLoggedIn ? (
                 <Route path="/register" element={<Navigate to="/" replace />} />
               ) : (
@@ -140,13 +160,13 @@ function App() {
               {!issAdmin ? (
                 <Route path="/" element={<Navigate to="/" replace />} />
               ) : (
-                <Route path="/add-product" element={<AddPage />} />
+                <Route path="/add-toy" element={<AddToy />} />
               )}
 
               {!issAdmin ? (
                 <Route path="/" element={<Navigate to="/" replace />} />
               ) : (
-                <Route path="/edit-product/:id" element={<EditPage />} />
+                <Route path="/edit-toy/:id" element={<EditToy />} />
               )}
 
               {!issAdmin ? (
@@ -154,24 +174,9 @@ function App() {
               ) : (
                 <Route path="/admin-logout" element={<AdminLogout />} />
               )}
-
               <Route path="*" element={<Navigate to="/" replace />} />
-
-              {/* <Route path="/child-form" element={<ChildForm />} /> */}
-              {/* <Route path="/admin-logout" element={<AdminLogout />} /> */}
+            
               {/* <Route path="/dashboard-page" element={<DashboardPage />} /> */}
-              {/* <Route path="/add-product" element={<AddPage />} /> */}
-              {/* <Route
-                path="/admin-protected/*"
-                element={
-                  <AdminProtectedRoutes
-                    isLoggedIn={isLoggedIn}
-                    isAdmin={isAdmin}
-                  />
-                }
-              />
-               */}
-              {/* Catch-all route */}
             </Routes>
           </MyContextProvider>
         </Router>
