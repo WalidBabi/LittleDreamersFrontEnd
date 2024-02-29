@@ -12,19 +12,9 @@ const Recommendations = () => {
   const { userName } = useParams();
   const [recommendations, setRecommendations] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-
-  const [filters, setFilters] = useState({
-    Age: false,
-    Price: false,
-    Category: false,
-    Brand: false,
-    DevelopmentalBenefits: false,
-    SocialEvents: false,
-  });
   const [selectedAccount, setSelectedAccount] = useState(null);
-  const [categoryFilters, setCategoryFilters] = useState([]);
   const [currentUser, setCurrentUser] = useState(() => ({
-    name: localStorage.getItem("userName") || "Guest",
+    name: localStorage.getItem("fullName") || "Guest",
     isParentUser: true,
     children: [],
   }));
@@ -79,47 +69,21 @@ const Recommendations = () => {
     fetchRecommendations();
   }, [id]);
 
-  // useEffect(() => {
-  //   const fetchCategoryFilters = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         "http://localhost:8000/api/category-filters"
-  //       );
-  //       setCategoryFilters(response.data);
-  //     } catch (error) {
-  //       console.error("Error fetching category filters:", error);
-  //     }
-  //   };
-
-  //   fetchCategoryFilters();
-  // }, []);
-
-  // const toggleFilter = (filter) => {
-  //   setFilters((prevFilters) => ({
-  //     ...prevFilters,
-  //     [filter]: !prevFilters[filter],
-  //   }));
-  // };
-
-  // const sendApiRequest = (id, parentUserName, childUserName) => {
-  //   console.log("Sending API request with data:", {
-  //     id,
-  //     parentUserName,
-  //     childUserName,
-  //   });
-  // };
-
   const handleAccountSelect = (account) => {
-    setSelectedAccount(account);
+    if (account && account.fullName) {
+      setSelectedAccount(account);
 
-    setCurrentUser({
-      name: account.fullName,
-      isParentUser: account.children && account.children.length > 0,
-      children: account.children || [],
-    });
+      setCurrentUser({
+        name: account.fullName,
+        isParentUser: account.children && account.children.length > 0,
+        children: account.children || [],
+      });
 
-    if (!account.children) {
-      fetchProducts(account.parent_id);
+      if (!account.children) {
+        fetchProducts(account.parent_id);
+      }
+    } else {
+      console.error("Account is null or does not have fullName property");
     }
   };
 
@@ -172,7 +136,7 @@ const Recommendations = () => {
       <div className="w-4/5 h-screen">
         <div className="text-center mb-4">
           <h1 className="text-3xl pt-4 font-medium text-blue-500">
-            Suitable For Your Child
+            Recommended for your child{" "}
           </h1>
         </div>
         <div className="p-4">
