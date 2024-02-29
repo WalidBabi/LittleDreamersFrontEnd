@@ -1,32 +1,28 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Sidebar from "../SideBarWithPagination/Sidebar";
 import Pagination from "../SideBarWithPagination/Pagination";
+import LoadingAnimation from "../Loading/LoadingAnimation";
+import Footer from "../Footer/Footer";
 
 const HomePage = () => {
   const productsPerPage = 20;
-  const navigate = useNavigate();
-  const { userName } = useParams();
-
-  const [filters, setFilters] = useState({
-    Age: false,
-    Price: false,
-    Category: false,
-    Brand: false,
-    DevelopmentalBenefits: false,
-    SocialEvents: false,
-  });
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [categoryFilters, setCategoryFilters] = useState([]);
   const [currentUser, setCurrentUser] = useState(() => ({
     name: localStorage.getItem("fullName") || "Guest",
     isParentUser: true,
     children: [],
   }));
+  const [loading, setLoading] = useState(true);
   const [userAccounts, setUserAccounts] = useState([]);
+  // Define a function to receive filter data from Sidebar
+  const receiveFilterData = (filters) => {
+    console.log("Received filter data in HomePage:", filters);
+    // Update state or perform any actions based on the received filter data
+  };
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -78,45 +74,17 @@ const HomePage = () => {
         );
 
         setProducts(response.data);
+        setLoading(false); // Set loading state to false after data is fetched
       } catch (error) {
         console.error(
           "Error fetching products:",
           error.response?.data || error.message
         );
+        setLoading(false); // Set loading state to false in case of error
       }
     };
     fetchData();
   }, [selectedAccount]);
-
-  // useEffect(() => {
-  //   const fetchCategoryFilters = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         "http://localhost:8000/api/category-filters"
-  //       );
-  //       setCategoryFilters(response.data);
-  //     } catch (error) {
-  //       console.error("Error fetching category filters:", error);
-  //     }
-  //   };
-
-  //   fetchCategoryFilters();
-  // }, []);
-
-  // const toggleFilter = (filter) => {
-  //   setFilters((prevFilters) => ({
-  //     ...prevFilters,
-  //     [filter]: !prevFilters[filter],
-  //   }));
-  // };
-
-  // const sendApiRequest = (id, parentUserName, childUserName) => {
-  //   console.log("Sending API request with data:", {
-  //     id,
-  //     parentUserName,
-  //     childUserName,
-  //   });
-  // };
 
   const handleAccountSelect = (account) => {
     if (account) {
@@ -169,38 +137,50 @@ const HomePage = () => {
   const currentProducts = products.slice(startIdx, endIdx);
 
   return (
-    <div className="flex">
-      <Sidebar
-        currentUser={currentUser}
-        userAccounts={userAccounts}
-        selectedAccount={selectedAccount}
-        handleAccountSelect={handleAccountSelect}
-      />
+    <>
+      <div className="flex">
+        <Sidebar
+          currentUser={currentUser}
+          userAccounts={userAccounts}
+          selectedAccount={selectedAccount}
+          handleAccountSelect={handleAccountSelect}
+          sendFilterData={receiveFilterData} // Pass the callback function
+        />
 
-      <div className="w-4/5 p-4">
-        <div className="grid grid-cols-4 gap-4">
-          {currentProducts.map((product) => (
-            <div key={product.id} className="product-container">
-              <div className="relative overflow-hidden">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="mb-2 transition-transform duration-300 transform hover:scale-110"
-                />
+        <div className="w-4/5 p-4">
+          {loading ? ( // Render loading animation if data is loading
+            <LoadingAnimation />
+          ) : (
+            <div>
+              <div className="grid grid-cols-4 gap-4">
+                {currentProducts.map((product) => (
+                  <div key={product.id} className="product-container">
+                    <div className="relative overflow-hidden">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="mb-2 transition-transform duration-300 transform hover:scale-110"
+                      />
+                    </div>
+                    <h3 className="font-semibold">{product.name}</h3>
+                    <p className="text-gray-600">{product.price}</p>
+                    <Link to={`/products/${product.id}`}>
+                      <button className="bg-blue-500 text-white py-1 px-2 rounded mt-2">
+                        Show Details
+                      </button>
+                    </Link>
+                  </div>
+                ))}
               </div>
-              <h3 className="font-semibold">{product.name}</h3>
-              <p className="text-gray-600">{product.price}</p>
-              <Link to={`/products/${product.id}`}>
-                <button className="bg-blue-500 text-white py-1 px-2 rounded mt-2">
-                  Show Details
-                </button>
-              </Link>
+              {renderPagination()}
             </div>
-          ))}
+          )}
         </div>
-        {renderPagination()}
       </div>
-    </div>
+      <div>
+      {!loading && <Footer />}
+      </div>
+    </>
   );
 };
 

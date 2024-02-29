@@ -1,8 +1,6 @@
-/* Add this to your styles or create a new CSS file */
-body,
-html,
 #root {
   height: 100%;
+  overflow-y: auto; /* Enable vertical scrollbar if content overflows */
 }
 
 .min-h-screen {
