@@ -161,20 +161,33 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
   };
 
   const handleBuyClick = () => {
+    // Get the token from local storage
+    const token = localStorage.getItem("token");
+
+    // Check if token is available
+    if (!token) {
+      console.error("Token not found in localStorage");
+      // Optionally, handle the case where the token is not available
+      return;
+    }
+
     // Prepare data to send to the backend
     const purchaseData = {
       products: cartItems.map((item) => ({
         productId: item.id,
         name: item.name,
         quantity: item.quantity,
-        rating: item.rating,
         fullPrice: item.price * item.quantity,
       })),
     };
 
     // Send the data to the backend using Axios
     axios
-      .post(`your-purchase-api-endpoint`, purchaseData)
+      .post(`http://localhost:8000/api/orders`, purchaseData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         console.log("Purchase data sent to backend successfully");
 
