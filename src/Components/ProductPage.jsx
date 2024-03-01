@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 
 const ProductPage = () => {
   const { id } = useParams();
+  const token = localStorage.getItem("token");
 
   const [product, setProduct] = useState([]);
   const [description, setDescription] = useState([]);
@@ -50,13 +51,29 @@ const ProductPage = () => {
     // Save the rating to local storage
     localStorage.setItem(`${id}-rating`, newRating);
 
+    // Get the token from local storage
+    const token = localStorage.getItem("token");
+
+    // Check if token is available
+    if (!token) {
+      console.error("Token not found in localStorage");
+      return;
+    }
+
     // Send the rating to the backend using Axios
     axios
-      .post(`your-rating-api-endpoint`, {
-        productId: id,
-        name: product.name,
-        rating: newRating,
-      })
+      .post(
+        `http://localhost:8000/api/Review/${id}/rating=${newRating}`, // Fix: use id instead of productId
+        {
+          productId: id,
+          rating: newRating,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
         console.log("Rating sent to backend successfully");
       })
