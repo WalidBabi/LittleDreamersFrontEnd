@@ -186,23 +186,28 @@ const EditToy = () => {
     }
 
     try {
-      const formDataToSend = new FormData();
+      const dataToSend = {};
 
       // Append product data
-      for (const key in formData.product) {
-        formDataToSend.append(`product[${key}]`, formData.product[key]);
-      }
+      Object.keys(formData.product).forEach((key) => {
+        dataToSend[key] = formData.product[key];
+      });
 
       // Append description data
-      for (const key in formData.description) {
-        formDataToSend.append(`description[${key}]`, formData.description[key]);
-      }
+      Object.keys(formData.description).forEach((key) => {
+        // Handle the 'company' field separately
+        if (key === "company") {
+          dataToSend["company"] = formData[key];
+        } else {
+          dataToSend[key] = formData.description[key];
+        }
+      });
 
-      console.log("FormData before request:", formData);
+      console.log("Data before request:", dataToSend);
 
       const response = await axios.put(
         `http://localhost:8000/api/edit-product/${id}`,
-        formDataToSend
+        dataToSend
       );
 
       console.log("Server response:", response.data);
