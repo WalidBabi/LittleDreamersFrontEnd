@@ -3,10 +3,13 @@ import axios from "axios";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Sidebar from "../SideBarWithPagination/Sidebar";
 import Pagination from "../SideBarWithPagination/Pagination";
+import LoadingAnimation from "../Loading/LoadingAnimation";
 import style from "./style.css";
 
 const Recommendations = () => {
   const { id } = useParams();
+  const [loading, setLoading] = useState(true); // Add loading state
+
   const productsPerPage = 20;
   const navigate = useNavigate();
   const { userName } = useParams();
@@ -57,12 +60,15 @@ const Recommendations = () => {
   useEffect(() => {
     const fetchRecommendations = async () => {
       try {
+        setLoading(true); // Set loading to true when fetching data
         const response = await axios.get(
           `http://localhost:8000/api/recommendations?child_id=${id}`
         );
         setRecommendations(response.data.toys);
       } catch (error) {
         console.error("Error fetching recommendations:", error);
+      } finally {
+        setLoading(false); // Set loading to false regardless of success or failure
       }
     };
 
@@ -140,27 +146,31 @@ const Recommendations = () => {
           </h1>
         </div>
         <div className="p-4">
-          <div className="grid grid-cols-4 gap-4">
-            {currentRecommendations.map((toy) => (
-              <div key={toy.id} className="product-container">
-                <div className="relative overflow-hidden">
-                  <img
-                    src={toy.image}
-                    alt={toy.name}
-                    className="mb-2 transition-transform duration-300 transform hover:scale-110"
-                  />
+          {loading && <LoadingAnimation />}{" "}
+          {/* Render loading animation when loading is true */}
+          {!loading && (
+            <div className="grid grid-cols-4 gap-4">
+              {currentRecommendations.map((toy) => (
+                <div key={toy.id} className="product-container">
+                  <div className="relative overflow-hidden">
+                    <img
+                      src={toy.image}
+                      alt={toy.name}
+                      className="mb-2 transition-transform duration-300 transform hover:scale-110"
+                    />
+                  </div>
+                  <h3 className="font-semibold">{toy.name}</h3>
+                  <p className="text-gray-600">{toy.price}</p>
+                  <Link to={`/products/${toy.id}`}>
+                    <button className="bg-blue-500 text-white py-1 px-2 rounded mt-2">
+                      Show Details
+                    </button>
+                  </Link>
                 </div>
-                <h3 className="font-semibold">{toy.name}</h3>
-                <p className="text-gray-600">{toy.price}</p>
-                <Link to={`/products/${toy.id}`}>
-                  <button className="bg-blue-500 text-white py-1 px-2 rounded mt-2">
-                    Show Details
-                  </button>
-                </Link>
-              </div>
-            ))}
-          </div>
-          {renderPagination()}
+              ))}
+            </div>
+          )}
+          ;{renderPagination()}
         </div>
       </div>
     </div>

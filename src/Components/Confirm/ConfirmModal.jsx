@@ -1,25 +1,28 @@
+// CustomModal.js
 import React from "react";
 import Modal from "react-modal";
 import "./Confirm.css";
 
 Modal.setAppElement("#root");
 
-const ConfirmModal = ({ isOpen, onClose, onConfirm, itemName }) => {
+const ConfirmModal = ({ isOpen, onClose, onConfirm, message }) => {
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      contentLabel="Delete Confirmation Modal"
-      className="modal"
-      overlayClassName="overlay"
+      contentLabel="Custom Modal"
+      className="custom-modal"
+      overlayClassName="custom-overlay"
     >
       <div className="modal-content">
-        <p>{`Are you sure you want to delete ${itemName}?`}</p>
+        <p>{message}</p>
         <div className="modal-buttons">
-          <button onClick={onConfirm} className="delete-btn">
-            Delete
+          <button onClick={onConfirm} className="confirm-btn">
+            Confirm
           </button>
-          <button onClick={onClose}>Cancel</button>
+          <button onClick={onClose} className="cancel-btn">
+            Cancel
+          </button>
         </div>
       </div>
     </Modal>

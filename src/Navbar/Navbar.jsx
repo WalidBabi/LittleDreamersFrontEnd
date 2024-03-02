@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import logo from "../images/logo.png";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import debounce from "lodash/debounce";
+import { Link, useNavigate } from "react-router-dom";
 import ShoppingCart from "./ShoppingCart";
-import SearchResults from "../Components/SearchResults";
 import LoadingAnimation from "../Loading/LoadingAnimation"; // Import the LoadingAnimation component
 import throttle from "lodash/throttle";
 

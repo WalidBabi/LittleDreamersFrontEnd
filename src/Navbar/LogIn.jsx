@@ -69,7 +69,7 @@ function LogIn({ setIsLoggedIn }) {
         axios.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${response.data.token}`;
-        console.log("login successful:", response.data);
+        // console.log("login successful:", response.data);
         setIsLoggedIn(true);
         navigate("/");
       } catch (error) {
