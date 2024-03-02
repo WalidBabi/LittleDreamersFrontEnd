@@ -5,6 +5,7 @@ import Sidebar from "../SideBarWithPagination/Sidebar";
 import Pagination from "../SideBarWithPagination/Pagination";
 import LoadingAnimation from "../Loading/LoadingAnimation";
 import Footer from "../Footer/Footer";
+import "./style.css";
 
 const HomePage = () => {
   const productsPerPage = 20;

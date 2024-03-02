@@ -1,0 +1,58 @@
+/* Add your modal styles here */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 90%;
+  height: 98%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  position: relative;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 1750px; /* Fixed width */
+  height: 840px; /* Fixed height */
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  color: #333; /* Use a dark color for the close icon */
+  font-size: 28px;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #e74c3c; /* Change color on hover */
+  }
+
+  span {
+    display: block;
+    width: 35px;
+    height: 35px;
+    text-align: center;
+    line-height: 35px;
+    font-weight: bold;
+  }
+}
+
+/* Animation for modal */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

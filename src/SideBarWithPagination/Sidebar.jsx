@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LoadingAnimation from "../Loading/LoadingAnimation";
 import axios from "axios"; // Import axios for making HTTP requests
 import arrow from "../images/arrow.svg";
+import FilterResults from "./FilterResults";
+import "./modalStyles.css"; // Import the CSS file
 
 const Sidebar = ({
   currentUser,
@@ -11,7 +13,9 @@ const Sidebar = ({
   handleAccountSelect,
   sendFilterData, // Add the callback function to receive filter data
 }) => {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const [filteredToysData, setFilteredToysData] = useState(null); // State to store filtered toys data
   const [filterData, setFilterData] = useState({
     category: [],
     age: [],
@@ -29,28 +33,14 @@ const Sidebar = ({
   });
 
   const [activeHeader, setActiveHeader] = useState(null);
+  const [toys, setToys] = useState([]); // New state for storing filter results
+  const [showFilteredToysModal, setShowFilteredToysModal] = useState(false);
 
   // Fetch filter data from the API
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get("http://localhost:8000/api/filter");
-        setFilterData(response.data || {});
-      } catch (error) {
-        console.error("Error fetching filter data:", error);
-      } finally {
-        // Whether success or error, set loading to false
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/filterResults");
         setFilterData(response.data || {});
       } catch (error) {
         console.error("Error fetching filter data:", error);
@@ -91,16 +81,13 @@ const Sidebar = ({
         value: skill,
         label: skill,
       })) || [],
-    companies: Object.entries(userAccounts?.companies || {}).map(
-      ([key, value]) => ({
-        value: key,
-        label: value,
-      })
-    ),
+    companies: Object.entries(filterData.companies).map(([key, value]) => ({
+      value: value, // Use the value as the value for companies
+      label: value,
+    })),
   };
 
-  const handleApplyFilters = () => {
-    // Convert selected filters to numbers
+  const handleApplyFilters = async () => {
     const filterSubmitData = {
       categories: selectedFilters.category.map(
         (key) => filterData.category[key]
@@ -110,26 +97,40 @@ const Sidebar = ({
       skill_developments: selectedFilters.skill_development.map(
         (key) => filterData.skill_development[key]
       ),
-      companies: selectedFilters.companies,
+      companies: selectedFilters.companies.map(
+        (key) => filterData.companies[key]
+      ),
       price: {
         min: Number(selectedFilters.price.min).toFixed(2),
         max: Number(selectedFilters.price.max).toFixed(2),
       },
     };
 
-    // Print the filterSubmitData in the console
-    console.log("Filter Submit Data:", filterSubmitData);
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/filterSubmit",
+        filterSubmitData
+      );
 
-    // Send the filterSubmitData via Axios API call
-    axios
-      .get("http://localhost:8000/api/filterSubmit", filterSubmitData)
-      .then((response) => {
-        console.log("Filters sent successfully:", filterSubmitData);
-      })
-      .catch((error) => {
-        console.error("Error sending filters:", error);
-      });
-    // setActiveHeader(false);
+      const { toys } = response.data;
+
+      if (toys.length === 0) {
+        console.log("No matching toys found.");
+        setFilteredToysData(null); // Clear previous filtered toys data
+
+        // Update UI or show a message to the user indicating no results
+      } else {
+        console.log("Filters sent successfully. Toys:", toys);
+        setToys(toys); // Update the 'toys' state with the filtered toys
+        setFilteredToysData(toys); // Store filtered toys data
+      }
+    } catch (error) {
+      console.error("Error sending filters:", error.response.data);
+      // Handle the error, display a message to the user, etc.
+    }
+
+    // Set active header to false after completing the filter process
+    setActiveHeader(false);
   };
 
   const handleCancelFilter = () => {
@@ -146,6 +147,10 @@ const Sidebar = ({
 
   const handleHeaderClick = (header) => {
     setActiveHeader(activeHeader === header ? null : header);
+  };
+
+  const handleCloseFilteredToysModal = () => {
+    setShowFilteredToysModal(false);
   };
 
   return (
@@ -350,6 +355,29 @@ const Sidebar = ({
           </div>
         </div>
       )}
+
+      {filteredToysData && (
+        <div className="modal-overlay z-10">
+          <div className="modal">
+            <div className="modal-close" onClick={handleCloseFilteredToysModal}>
+              <span>&times;</span>
+            </div>
+            <div className="filtered-toys-container p-6">
+              <h2 className="text-3xl font-bold mb-6 text-gray-800 border-b pb-2">
+                🌟 Filtered Toys 🌟
+              </h2>
+
+              {/* Include FilterResults component */}
+              <FilterResults
+                filterData={selectedFilters}
+                filteredToysData={filteredToysData}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* <FilterResults filterData={selectedFilters} filteredToys={toys} /> */}
     </div>
   );
 };

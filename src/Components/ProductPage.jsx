@@ -5,7 +5,6 @@ import { useParams } from "react-router-dom";
 
 const ProductPage = () => {
   const { id } = useParams();
-  const token = localStorage.getItem("token");
 
   const [product, setProduct] = useState([]);
   const [description, setDescription] = useState([]);
@@ -100,7 +99,6 @@ const ProductPage = () => {
       name: product.name,
       price: product.price,
       quantity: quantity,
-      rating: rating,
     });
 
     // Save the cart items to local storage
@@ -141,7 +139,7 @@ const ProductPage = () => {
           src={product.image}
           alt="Product"
           className="w-full rounded-lg shadow-lg"
-          style={{ maxWidth: "100%", height: "95%" }}
+          style={{ maxWidth: "100%", height: "80%" }}
         />
       </div>
       <div className="w-1/2 pl-8">
