@@ -16,6 +16,8 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
   const [showCart, setShowCart] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleClearSearch = () => {
     // Use setTimeout to ensure state is updated before navigating
@@ -213,6 +215,44 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
       })
       .catch((error) => {
         console.error("Error sending purchase data to backend:", error);
+
+        let errorMessageText =
+          "An error occurred while processing your request.";
+
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          if (error.response.status === 404) {
+            errorMessageText = "The requested resource was not found.";
+          } else if (error.response.status === 500) {
+            errorMessageText = "Internal server error. Please try again later.";
+          } else if (error.response.status === 400) {
+            errorMessageText =
+              "Sorry... The Quantity You Want Is Not Available Now. Please change the quantity.";
+          } else if (error.response.status === 401) {
+            errorMessageText = "Unauthorized. Please log in.";
+          }
+
+          // Include the specific error message from the API response
+          if (error.response.data && error.response.data.message) {
+            errorMessageText += ` ${error.response.data.message}`;
+          }
+        } else if (error.request) {
+          // The request was made but no response was received
+          errorMessageText =
+            "No response received from the server. Please try again.";
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          errorMessageText = "Error setting up the request. Please try again.";
+        }
+
+        // Set the error message in state
+        setShowError(true);
+        setErrorMessage(errorMessageText);
+
+        // Remove the error message after 5 seconds (adjust as needed)
+        setTimeout(() => {
+          setShowError(false);
+        }, 5000);
       });
   };
 
@@ -479,6 +519,19 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
                 No
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {showError && (
+        <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
+          <div className="bg-red-500 text-white p-6 text-center rounded-md">
+            <p className="text-white">{errorMessage}</p>
+            <button
+              className="bg-white text-red-500 px-4 py-2 rounded"
+              onClick={() => setShowError(false)}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
