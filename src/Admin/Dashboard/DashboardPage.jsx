@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
-import ConfirmModal from "../Confirm/ConfirmModal";
-import Pagination from "../../SideBarWithPagination/Pagination";
-import LoadingAnimation from "../../Loading/LoadingAnimation";
+import ConfirmModal from "../../Components/Confirm/ConfirmModal";
+import Pagination from "../../Layout/SideBarWithPagination/Pagination";
+import LoadingAnimation from "../../Layout/Loading/LoadingAnimation";
 
 const DashboardPage = () => {
   const navigate = useNavigate();

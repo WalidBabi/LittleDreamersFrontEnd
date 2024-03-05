@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "./AuthContext";
-import log_in_foto from "../images/log_in_foto.png";
-import style from "./style.css";
+import { useAuth } from "../../Validation/AuthContext";
+import log_in_foto from "../../images/log_in_foto.png";
+import style from "../style.css";
 
 function LogIn({ setIsLoggedIn }) {
   const navigate = useNavigate();
@@ -100,7 +100,7 @@ function LogIn({ setIsLoggedIn }) {
 
             setErrorMessage(errorText);
           } else {
-            setErrorMessage("An error occurred. Please try again later.");
+            setErrorMessage("Please Register.");
           }
         } else if (error.request) {
           console.error("No response received:", error.request);
@@ -195,8 +195,8 @@ function LogIn({ setIsLoggedIn }) {
       {errorMessage && (
         <div className="error-modal">
           <div className="error-content">
-            <h2>Error</h2>
-            <p>{errorMessage}</p>
+            <h2 className="text-white">Error</h2>
+            <p className="text-white">{errorMessage}</p>
             <button onClick={() => setErrorMessage("")}>Close</button>
           </div>
         </div>

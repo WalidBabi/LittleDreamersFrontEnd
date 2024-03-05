@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import LoadingAnimation from "../Loading/LoadingAnimation";
-import axios from "axios"; // Import axios for making HTTP requests
-import arrow from "../images/arrow.svg";
+import axios from "axios";
+import arrow from "../../images/arrow.svg";
 import FilterResults from "./FilterResults";
-import "./modalStyles.css"; // Import the CSS file
+import "./modalStyles.css";
 
 const Sidebar = ({
   currentUser,

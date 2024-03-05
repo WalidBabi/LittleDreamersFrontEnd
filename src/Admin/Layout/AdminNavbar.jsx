@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../images/logo-admin.png";
+import logo from "../../images/logo-admin.png";
 
 function AdminNavbar({ setIsLoggedIn }) {
   const [issAdmin, setIssAdmin] = useState(

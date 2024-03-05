@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useCart } from "./CartContext";
+import { useCart } from "./ShoppingCart/CartContext";
 import { useParams } from "react-router-dom";
-import LoadingAnimation from "../Loading/LoadingAnimation";
+import LoadingAnimation from "../Layout/Loading/LoadingAnimation";
 
 const ProductPage = () => {
   const { id } = useParams();

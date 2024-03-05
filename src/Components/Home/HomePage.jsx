@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import Sidebar from "../SideBarWithPagination/Sidebar";
-import Pagination from "../SideBarWithPagination/Pagination";
-import LoadingAnimation from "../Loading/LoadingAnimation";
-import Footer from "../Footer/Footer";
+import Sidebar from "../../Layout/SideBarWithPagination/Sidebar";
+import Pagination from "../../Layout/SideBarWithPagination/Pagination";
+import LoadingAnimation from "../../Layout/Loading/LoadingAnimation";
+import Footer from "../../Layout/Footer/Footer";
 import "./style.css";
 
 const HomePage = () => {

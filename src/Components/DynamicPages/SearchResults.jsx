@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Sidebar from "../SideBarWithPagination/Sidebar";
-import Pagination from "../SideBarWithPagination/Pagination";
+import Sidebar from "../../Layout/SideBarWithPagination/Sidebar";
+import Pagination from "../../Layout/SideBarWithPagination/Pagination";
 import axios from "axios";
-import LoadingAnimation from "../Loading/LoadingAnimation";
-import not_found from "../images/not_found.png";
+import LoadingAnimation from "../../Layout/Loading/LoadingAnimation";
+import not_found from "../../images/not_found.png";
 
 function SearchResults() {
   const [results, setResults] = useState([]);

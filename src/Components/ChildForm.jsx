@@ -259,7 +259,11 @@ const ChildForm = () => {
                     }
                     // Ensure the value does not exceed two digits
                     const newValue = e.target.value + e.key;
-                    if (newValue.length > 2 || parseInt(newValue) > 10 || parseInt(newValue) === 0) {
+                    if (
+                      newValue.length > 2 ||
+                      parseInt(newValue) > 10 ||
+                      parseInt(newValue) === 0
+                    ) {
                       e.preventDefault();
                     }
                   }}
@@ -306,7 +310,8 @@ const ChildForm = () => {
                 What activities does the child enjoy the most? This could
                 include playing with toys, games, sports, or any other hobbies
                 or interests. Please describe in detail to help us understand
-                what brings joy to the child's life.
+                what brings joy to the child's life.(Fine Motor Skills, Spatial
+                Reasoning, Creativity, )
               </label>
               <textarea
                 id="childInterests"

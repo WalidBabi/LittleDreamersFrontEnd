@@ -1,5 +1,5 @@
 import "./App.css";
-import { AuthProvider } from "../src/Navbar/AuthContext";
+import { AuthProvider } from "./Validation/AuthContext";
 import { Fragment, useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
@@ -8,29 +8,24 @@ import {
   Navigate,
 } from "react-router-dom";
 import { MyContextProvider } from "./MyContext"; // Import your context provider
-import NavBar from "./Navbar/Navbar";
-import HomePage from "./Home/HomePage";
-import FAQ from "./Navbar/Faq";
-import ContactUs from "./Navbar/ContactUs";
-import AboutUs from "./Navbar/AboutUs/AboutUs";
-import RegisterUser from "./Navbar/RegisterUser";
-import LoginUser from "./Navbar/LogIn";
+import AdminRegister from "./Admin/LoginAndLogout/AdminRegister";
+import AdminLogin from "./Admin/LoginAndLogout/AdminLogin";
+import AdminLogout from "./Admin/LoginAndLogout/AdminLogout";
+import AdminNavbar from "./Admin/Layout/AdminNavbar";
+import AddToy from "./Admin/Crud/AddToy";
+import EditToy from "./Admin/Crud/EditToy";
+import DashboardPage from "./Admin/Dashboard/DashboardPage";
+import RegisterUser from "./User/LoginAndLogout/UserRegister";
+import LoginUser from "./User/LoginAndLogout/UserLogin";
+import NavBar from "./Layout/Navbar/Navbar";
+import HomePage from "./Components/Home/HomePage";
+import FAQ from "./Components/StaticPages/Faq";
+import ContactUs from "./Components/StaticPages/ContactUs";
+import AboutUs from "./Components/StaticPages/AboutUs/AboutUs";
 import ChildForm from "./Components/ChildForm";
-import AdminProtectedRoutes from "./AdminProtectedRoutes";
 import ProductPage from "./Components/ProductPage";
-import AdminLogin from "./Admin/AdminLogin";
-import AdminRegister from "./Admin/AdminRegister";
-import { Dashboard, Filter, Recommend } from "@mui/icons-material";
-import Recommendations from "./Components/Recommendations";
-import SearchResults from "./Components/SearchResults";
-import DashboardPage from "./Components/Dashboard/DashboardPage";
-import AdminLogout from "./Admin/AdminLogout";
-import AddPage from "./Components/CRUD/AddPage";
-import EditPage from "./Components/CRUD/EditPage";
-import AdminNavbar from "./Admin/AdminNavbar";
-import Filters from "./Components/Filters";
-import AddToy from "./Components/CRUD/AddToy";
-import EditToy from "./Components/CRUD/EditToy";
+import Recommendations from "./Components/DynamicPages/Recommendations";
+import SearchResults from "./Components/DynamicPages/SearchResults";
 import PolicyComponent from "./Components/Policy/PolicyComponent";
 
 function App() {
@@ -118,7 +113,6 @@ function App() {
                 path="/recommendations/:id"
                 element={<Recommendations />}
               />
-              <Route path="/filters" element={<Filters />} />
               {isLoggedIn ? (
                 <Route path="/register" element={<Navigate to="/" replace />} />
               ) : (
@@ -175,7 +169,7 @@ function App() {
                 <Route path="/admin-logout" element={<AdminLogout />} />
               )}
               <Route path="*" element={<Navigate to="/" replace />} />
-            
+
               {/* <Route path="/dashboard-page" element={<DashboardPage />} /> */}
             </Routes>
           </MyContextProvider>
