@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import LoadingAnimation from "../Loading/LoadingAnimation";
 import axios from "axios";
@@ -11,8 +11,43 @@ const Sidebar = ({
   userAccounts,
   selectedAccount,
   handleAccountSelect,
-  sendFilterData, // Add the callback function to receive filter data
+  sendFilterData,
 }) => {
+  const [isClosing, setIsClosing] = useState(false);
+  const modalRef = useRef();
+  const [showNoResultsModal, setShowNoResultsModal] = useState(false);
+
+  const closeModal = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      handleCloseFilteredToysModal();
+      setIsClosing(false);
+    }, 300);
+  };
+
+  const handleSwipeDown = (startY, currentY) => {
+    if (startY - currentY > 50) {
+      closeModal();
+    }
+  };
+
+  const handleTouchStart = (e) => {
+    const startY = e.touches[0].clientY;
+
+    const handleTouchMove = (e) => {
+      const currentY = e.touches[0].clientY;
+      handleSwipeDown(startY, currentY);
+    };
+
+    const handleTouchEnd = () => {
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
+    };
+
+    window.addEventListener("touchmove", handleTouchMove);
+    window.addEventListener("touchend", handleTouchEnd);
+  };
+
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [filteredToysData, setFilteredToysData] = useState(null); // State to store filtered toys data
@@ -117,12 +152,13 @@ const Sidebar = ({
       if (toys.length === 0) {
         console.log("No matching toys found.");
         setFilteredToysData(null); // Clear previous filtered toys data
-
+        setShowNoResultsModal(true); // Show the warning modal
         // Update UI or show a message to the user indicating no results
       } else {
         console.log("Filters sent successfully. Toys:", toys);
         setToys(toys); // Update the 'toys' state with the filtered toys
         setFilteredToysData(toys); // Store filtered toys data
+        setShowNoResultsModal(false); // Hide the warning modal
       }
     } catch (error) {
       console.error("Error sending filters:", error.response.data);
@@ -356,13 +392,53 @@ const Sidebar = ({
         </div>
       )}
 
-      {filteredToysData && (
-        <div className="modal-overlay z-10">
-          <div className="modal">
-            <div className="modal-close" onClick={handleCloseFilteredToysModal}>
-              <span>&times;</span>
+      {showNoResultsModal && (
+        <div className="custom-warning-modal-overlay fixed top-0 left-0 w-full h-full flex items-center justify-center z-10 bg-black bg-opacity-50 transition-opacity">
+          <div className="custom-warning-modal w-1/4 bg-amber-300 border-2 rounded-md shadow-md p-4 cursor-default">
+            <div className="filtered-toys-container">
+              <h2 className="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">
+                🚨 Warning 🚨
+              </h2>
+              <p className="text-black">
+                No matching toys found. Please change your filters or price
+                range.
+              </p>
+              <button
+                className="mt-4 bg-blue-500 text-white rounded-md p-2 px-3"
+                onClick={() => setShowNoResultsModal(false)}
+              >
+                OK
+              </button>
             </div>
-            <div className="filtered-toys-container p-6">
+          </div>
+        </div>
+      )}
+      {filteredToysData && (
+        <div
+          className={`modal-overlay fixed top-0 left-0 w-full h-full flex items-center justify-center z-10 bg-black bg-opacity-50 transition-opacity ${
+            isClosing ? "opacity-0" : "opacity-100"
+          }`}
+          onClick={closeModal}
+        >
+          <div
+            ref={modalRef}
+            className={`modal bg-white rounded-md shadow-md p-6 cursor-default transition-transform transform ${
+              isClosing ? "-translate-y-full" : "translate-y-0"
+            }`}
+            onTouchStart={handleTouchStart}
+          >
+            <div className="modal-close absolute top-4 right-4 text-gray-500 hover:text-gray-700 cursor-pointer">
+              {/* Replace the standard close icon with a creative alternative */}
+              <svg
+                className="w-8 h-8 text-red-500 hover:text-red-700"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                {/* Replace this path with your desired close icon */}
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+              </svg>
+            </div>
+            <div className="filtered-toys-container">
               <h2 className="text-3xl font-bold mb-6 text-gray-800 border-b pb-2">
                 🌟 Filtered Toys 🌟
               </h2>
