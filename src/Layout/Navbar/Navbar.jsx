@@ -3,7 +3,7 @@ import axios from "axios";
 import logo from "../../images/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import ShoppingCart from "../../Components/ShoppingCart/ShoppingCart";
-import LoadingAnimation from "../Loading/LoadingAnimation"; // Import the LoadingAnimation component
+import LoadingAnimation from "../Loading/LoadingAnimation";
 import throttle from "lodash/throttle";
 
 function NavBar({ isLoggedIn, setIsLoggedIn }) {
@@ -287,63 +287,6 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
     localStorage.removeItem("cartItems");
     // Close the cart popup
     setShowCart(false);
-  };
-
-  // Product rendering logic
-  const renderProducts = () => {
-    if (searchResults.length > 0) {
-      // Render search results
-      return (
-        <div className={`search-results ${showCart ? "hidden" : ""}`}>
-          {/* Render search results */}
-          <h3>Result of search:</h3>
-          <ul>
-            {searchResults.map((result) => (
-              <li key={result.id}>
-                <img
-                  src={result.image}
-                  alt={result.name}
-                  className="search-result-image"
-                />
-                <p>{result.name}</p>
-                <p>${result.price}</p>
-                {/* Add other product details as needed */}
-              </li>
-            ))}
-          </ul>
-        </div>
-      );
-    } else {
-      // Render default product links
-      return (
-        <div className="flex justify-center space-x-6">
-          <Link to="/" className="nav-link text-white hover:text-red-500">
-            HOME
-          </Link>
-          <Link
-            to="/contact-us"
-            className="nav-link text-white hover:text-red-500"
-          >
-            CONTACT-US
-          </Link>
-          <Link
-            to="/about-us"
-            className="nav-link text-white hover:text-red-500"
-          >
-            ABOUT-US
-          </Link>
-          <Link to="/faq" className="nav-link text-white hover:text-red-500">
-            FAQ
-          </Link>
-          <Link
-            to="/User-product-policy"
-            className="nav-link text-white hover:text-red-500"
-          >
-            POLICIES
-          </Link>
-        </div>
-      );
-    }
   };
 
   return (

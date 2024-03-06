@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate hook
+import { Link, useNavigate } from "react-router-dom";
 import register_foto from "../../images/register_foto.png";
-import { useAuth } from "../../Validation/AuthContext";
+import { useAuth } from "../../Context/AuthContext";
 
 function RegisterUser() {
   const navigate = useNavigate();

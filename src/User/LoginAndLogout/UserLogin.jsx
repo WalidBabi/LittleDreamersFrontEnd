@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../Validation/AuthContext";
+import { useAuth } from "../../Context/AuthContext";
 import log_in_foto from "../../images/log_in_foto.png";
 import style from "../style.css";
 

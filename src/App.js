@@ -1,5 +1,5 @@
 import "./App.css";
-import { AuthProvider } from "./Validation/AuthContext";
+import { AuthProvider } from "./Context/AuthContext";
 import { Fragment, useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
@@ -7,7 +7,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { MyContextProvider } from "./MyContext"; // Import your context provider
+import { MyContextProvider } from "./Context/MyContext"; // Import your context provider
 import AdminRegister from "./Admin/LoginAndLogout/AdminRegister";
 import AdminLogin from "./Admin/LoginAndLogout/AdminLogin";
 import AdminLogout from "./Admin/LoginAndLogout/AdminLogout";
@@ -48,10 +48,7 @@ function App() {
         console.log("User inactive for 30 minutes. Logging out...");
         setIsLoggedIn(false);
         // Clear tokens or session data on the client side (if applicable)
-        // ...
-
-        // Redirect to the login page or another appropriate page (if needed)
-        // history.push("/login");
+        // navigate("/login");
       }, 30 * 60 * 1000); // 30 minutes in milliseconds
 
       // Save the timeout ID
