@@ -7,7 +7,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { MyContextProvider } from "./Context/MyContext"; // Import your context provider
+import { MyContextProvider } from "./Context/MyContext";
 import AdminRegister from "./Admin/LoginAndLogout/AdminRegister";
 import AdminLogin from "./Admin/LoginAndLogout/AdminLogin";
 import AdminLogout from "./Admin/LoginAndLogout/AdminLogout";
@@ -27,6 +27,7 @@ import ProductPage from "./Components/ProductPage";
 import Recommendations from "./Components/DynamicPages/Recommendations";
 import SearchResults from "./Components/DynamicPages/SearchResults";
 import PolicyComponent from "./Components/Policy/PolicyComponent";
+import { CartProvider } from "./Context/CartContext";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -83,93 +84,101 @@ function App() {
     <AuthProvider>
       <Fragment>
         <Router>
-          <MyContextProvider>
-            {/* Hide NavBar when isAdmin is true or the path is "/admin-login" or "/admin-register" */}
-            {!isAdmin &&
-              !["/admin-login", "/admin-register"].includes(
-                window.location.pathname
-              ) && (
-                <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-              )}
+          <CartProvider>
+            <MyContextProvider>
+              {/* Hide NavBar when isAdmin is true or the path is "/admin-login" or "/admin-register" */}
+              {!isAdmin &&
+                !["/admin-login", "/admin-register"].includes(
+                  window.location.pathname
+                ) && (
+                  <NavBar
+                    isLoggedIn={isLoggedIn}
+                    setIsLoggedIn={setIsLoggedIn}
+                  />
+                )}
 
-            {/* AdminNavbar is rendered conditionally for admin routes */}
-            {issAdmin && <AdminNavbar />}
+              {/* AdminNavbar is rendered conditionally for admin routes */}
+              {issAdmin && <AdminNavbar />}
 
-            <Routes>
-              <Route exact path="/" element={<HomePage />} />
-              <Route path="/contact-us" element={<ContactUs />} />
-              <Route path="/about-us" element={<AboutUs />} />
-              <Route
-                path="/User-product-policy"
-                element={<PolicyComponent />}
-              />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/search-results" element={<SearchResults />} />
-              <Route path="/products/:id" element={<ProductPage />} />
-              <Route
-                path="/recommendations/:id"
-                element={<Recommendations />}
-              />
-              {isLoggedIn ? (
-                <Route path="/register" element={<Navigate to="/" replace />} />
-              ) : (
-                <Route path="/register" element={<RegisterUser />} />
-              )}
-              {isLoggedIn ? (
-                <Route path="/login" element={<Navigate to="/" replace />} />
-              ) : (
+              <Routes>
+                <Route exact path="/" element={<HomePage />} />
+                <Route path="/contact-us" element={<ContactUs />} />
+                <Route path="/about-us" element={<AboutUs />} />
                 <Route
-                  path="/login"
-                  element={<LoginUser setIsLoggedIn={setIsLoggedIn} />}
+                  path="/User-product-policy"
+                  element={<PolicyComponent />}
                 />
-              )}
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/search-results" element={<SearchResults />} />
+                <Route path="/products/:id" element={<ProductPage />} />
+                <Route
+                  path="/recommendations/:id"
+                  element={<Recommendations />}
+                />
+                {isLoggedIn ? (
+                  <Route
+                    path="/register"
+                    element={<Navigate to="/" replace />}
+                  />
+                ) : (
+                  <Route path="/register" element={<RegisterUser />} />
+                )}
+                {isLoggedIn ? (
+                  <Route path="/login" element={<Navigate to="/" replace />} />
+                ) : (
+                  <Route
+                    path="/login"
+                    element={<LoginUser setIsLoggedIn={setIsLoggedIn} />}
+                  />
+                )}
 
-              {isLoggedIn ? (
-                <Route path="/" element={<Navigate to="/" replace />} />
-              ) : (
-                <Route path="/admin-login" element={<AdminLogin />} />
-              )}
+                {isLoggedIn ? (
+                  <Route path="/" element={<Navigate to="/" replace />} />
+                ) : (
+                  <Route path="/admin-login" element={<AdminLogin />} />
+                )}
 
-              {isLoggedIn ? (
-                <Route path="/" element={<Navigate to="/" replace />} />
-              ) : (
-                <Route path="/admin-Register" element={<AdminRegister />} />
-              )}
+                {isLoggedIn ? (
+                  <Route path="/" element={<Navigate to="/" replace />} />
+                ) : (
+                  <Route path="/admin-Register" element={<AdminRegister />} />
+                )}
 
-              {!isLoggedIn ? (
-                <Route path="/" element={<Navigate to="/" replace />} />
-              ) : (
-                <Route path="/child-form" element={<ChildForm />} />
-              )}
+                {!isLoggedIn ? (
+                  <Route path="/" element={<Navigate to="/" replace />} />
+                ) : (
+                  <Route path="/child-form" element={<ChildForm />} />
+                )}
 
-              {!issAdmin ? (
-                <Route path="/" element={<Navigate to="/" replace />} />
-              ) : (
-                <Route path="/dashboard-page" element={<DashboardPage />} />
-              )}
+                {!issAdmin ? (
+                  <Route path="/" element={<Navigate to="/" replace />} />
+                ) : (
+                  <Route path="/dashboard-page" element={<DashboardPage />} />
+                )}
 
-              {!issAdmin ? (
-                <Route path="/" element={<Navigate to="/" replace />} />
-              ) : (
-                <Route path="/add-toy" element={<AddToy />} />
-              )}
+                {!issAdmin ? (
+                  <Route path="/" element={<Navigate to="/" replace />} />
+                ) : (
+                  <Route path="/add-toy" element={<AddToy />} />
+                )}
 
-              {!issAdmin ? (
-                <Route path="/" element={<Navigate to="/" replace />} />
-              ) : (
-                <Route path="/edit-toy/:id" element={<EditToy />} />
-              )}
+                {!issAdmin ? (
+                  <Route path="/" element={<Navigate to="/" replace />} />
+                ) : (
+                  <Route path="/edit-toy/:id" element={<EditToy />} />
+                )}
 
-              {!issAdmin ? (
-                <Route path="/" element={<Navigate to="/" replace />} />
-              ) : (
-                <Route path="/admin-logout" element={<AdminLogout />} />
-              )}
-              <Route path="*" element={<Navigate to="/" replace />} />
+                {!issAdmin ? (
+                  <Route path="/" element={<Navigate to="/" replace />} />
+                ) : (
+                  <Route path="/admin-logout" element={<AdminLogout />} />
+                )}
+                <Route path="*" element={<Navigate to="/" replace />} />
 
-              {/* <Route path="/dashboard-page" element={<DashboardPage />} /> */}
-            </Routes>
-          </MyContextProvider>
+                {/* <Route path="/dashboard-page" element={<DashboardPage />} /> */}
+              </Routes>
+            </MyContextProvider>
+          </CartProvider>
         </Router>
       </Fragment>
     </AuthProvider>
